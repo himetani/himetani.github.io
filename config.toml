@@ -6,6 +6,7 @@ hasCJKLanguage = true
 googleAnalytics = "UA-118965980-1"
 enableEmoji = true
 disqusShortname = "himetani"
+publishDir = "docs"
 
 [params]
 	twitter = "himetani_cafe"
