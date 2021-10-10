@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html lang="ja">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  
+  <title>Goのhttp serverの雰囲気を理解する - himetani&#39;s cafe</title>
+
+  
+  
+  <meta name="description" content="Goのhttp serverの雰囲気を理解する
+Goのhttpサーバの雰囲気を理解するための記事を書いた。" />
+  <meta name="author" content="" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/app.min.css" />
+
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/an-old-hope.min.css" />
+  <script
+    defer
+    src="https://himetani.github.io/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/theme.png" />
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/github.svg" />
+  
+
+  
+  <link rel="icon" href="https://himetani.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://himetani.github.io/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.88.1" />
+
+  
+  
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-118965980-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  
+  
+  
+  <meta property="og:title" content="Goのhttp serverの雰囲気を理解する" />
+<meta property="og:description" content="Goのhttp serverの雰囲気を理解する
+Goのhttpサーバの雰囲気を理解するための記事を書いた。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://himetani.github.io/posts/go-http-server-overview/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-04-30T00:21:25+09:00" />
+<meta property="article:modified_time" content="2018-04-30T00:21:25+09:00" />
+
+
+  
+  <meta itemprop="name" content="Goのhttp serverの雰囲気を理解する">
+<meta itemprop="description" content="Goのhttp serverの雰囲気を理解する
+Goのhttpサーバの雰囲気を理解するための記事を書いた。"><meta itemprop="datePublished" content="2018-04-30T00:21:25+09:00" />
+<meta itemprop="dateModified" content="2018-04-30T00:21:25+09:00" />
+<meta itemprop="wordCount" content="4443">
+<meta itemprop="keywords" content="golang,http," />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Goのhttp serverの雰囲気を理解する"/>
+<meta name="twitter:description" content="Goのhttp serverの雰囲気を理解する
+Goのhttpサーバの雰囲気を理解するための記事を書いた。"/>
+
+  
+  
+</head>
+
+
+  <body class="not-ready" data-menu="false">
+    <header class="header">
+  
+  <p class="logo">
+    <a class="site-name" href="https://himetani.github.io">himetani&#39;s cafe</a><a class="btn-dark"></a>
+  </p>
+  
+
+  <script>
+    let bodyClx = document.body.classList;
+    let btnDark = document.querySelector('.btn-dark');
+    let sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+    let darkVal = localStorage.getItem('dark');
+
+    let setDark = (isDark) => {
+      bodyClx[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark ? 'yes' : 'no');
+    };
+
+    setDark(darkVal ? darkVal === 'yes' : sysDark.matches);
+    requestAnimationFrame(() => bodyClx.remove('not-ready'));
+
+    btnDark.addEventListener('click', () => setDark(!bodyClx.contains('dark')));
+    sysDark.addEventListener('change', (event) => setDark(event.matches));
+  </script>
+
+  
+  
+
+  
+  <nav class="social">
+    
+    <a
+      class="twitter"
+      style="--url: url(./twitter.svg)"
+      href="https://twitter.com/himetani_cafe"
+      target="_blank"
+    ></a>
+    
+    <a
+      class="github"
+      style="--url: url(./github.svg)"
+      href="https://github.com/himetani"
+      target="_blank"
+    ></a>
+    
+  </nav>
+  
+</header>
+
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-title">
+    <p>
+      <time>Apr 30, 2018</time>
+      
+    </p>
+    <h1>Goのhttp serverの雰囲気を理解する</h1>
+  </header>
+  <section class="post-content"><h1 id="goのhttp-serverの雰囲気を理解する">Goのhttp serverの雰囲気を理解する</h1>
+<p>Goのhttpサーバの雰囲気を理解するための記事を書いた。</p>
+<h1 id="tl-dr">tl; dr</h1>
+<ul>
+<li>Goのhttpサーバの肝は<code>Handler</code>インタフェースなので、<code>Handler</code>インタフェースに注目すると雰囲気が掴みやすい。</li>
+<li><code>Handler</code>インタフェースが、ライブラリやフレームワークを実現するための拡張性、柔軟性を提供している。（すごい）</li>
+</ul>
+<h1 id="handlerインタフェースとは">Handlerインタフェースとは</h1>
+<pre tabindex="0"><code>type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+</code></pre><p>第一引数にResponseWriter型、第二引数にRequestのポインタ型を取る<code>ServeHTTP</code>というメソッドを実装している型を扱うためのインタフェース。
+Goのhttpサーバは、この<code>Handler</code>インタフェースを上手く使っている。<br>
+以下の説明で、<code>Handler</code>インタフェースという文言は、標準パッケージの<code>http.Handler</code>を指しているものとする。</p>
+<h1 id="始めてhttpサーバを立てるとき">始めてhttpサーバを立てるとき</h1>
+<p>ググってみて、以下のようなコードを書くはず。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">fuga</span> <span style="color:#66d9ef">int</span>
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">fuga</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprintf</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;fuga type: %d&#34;</span>, <span style="color:#f92672">*</span><span style="color:#a6e22e">f</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandleFunc</span>(<span style="color:#e6db74">&#34;/hoge&#34;</span>, <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprintf</span>(<span style="color:#a6e22e">w</span>, <span style="color:#e6db74">&#34;Hello world&#34;</span>)
+	})
+
+	<span style="color:#a6e22e">f</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">fuga</span>(<span style="color:#ae81ff">1</span>)
+	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/fuga&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">f</span>)
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		panic(<span style="color:#a6e22e">err</span>)
+	}
+}
+</code></pre></div><p><code>HandleFunc</code>メソッドや<code>Handle</code>メソッドを使ってhandlerを登録することができるのだな、handlerは特定のURLにマッピングされ、マッチするURLへのアクセス時にhandlerが実行されるのだな、と直感的に理解できると思う。</p>
+<h1 id="本格的に使おうとするとき">本格的に使おうとするとき</h1>
+<p>登録するhandlerの数が増えたり、より複雑になってくると、もっと上手くやれないものかと思うはず。例えば以下のようなもの。</p>
+<ul>
+<li>様々なhandler間で共通の処理を上手く書けないか
+<ul>
+<li>ロギング</li>
+<li>認証</li>
+<li>Header情報に基づく共通処理、など</li>
+</ul>
+</li>
+<li>もっと便利にroutingの設定をできないか
+<ul>
+<li>個別のHTTPメソッドに対してhandlerを登録したい</li>
+<li>path parameterを簡単にハンドリングしたい、など</li>
+</ul>
+</li>
+</ul>
+<p>サードパーティのライブラリやフレームワークを使えば、これらの要望を満たすことができる。では、サードパーティのライブラリやフレームワークは、何を、どのように実装しているのだろうか。それらの雰囲気を理解するために、まずは標準のhttpサーバの挙動の雰囲気を追ってみる。</p>
+<h1 id="標準ライブラリのhttpサーバの挙動">標準ライブラリのhttpサーバの挙動</h1>
+<p>Goのソースコードから、雰囲気を汲み取ってみる。長ったらしいので、退屈であれば<a href="#anchor">主要な構成要素とHandlerインタフェース</a>まで読み飛ばしてもらってもいいと思う。
+まずは、<code>http.ListenAndServe(&quot;:8080&quot;, nil)</code>の実行後の挙動を追う。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">2966</span> <span style="color:#75715e">// ListenAndServe always returns a non-nil error.
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2967</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#a6e22e">addr</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">handler</span> <span style="color:#a6e22e">Handler</span>) <span style="color:#66d9ef">error</span> {
+<span style="color:#ae81ff">2968</span>     <span style="color:#a6e22e">server</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Server</span>{<span style="color:#a6e22e">Addr</span>: <span style="color:#a6e22e">addr</span>, <span style="color:#a6e22e">Handler</span>: <span style="color:#a6e22e">handler</span>}
+<span style="color:#ae81ff">2969</span>     <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">ListenAndServe</span>()
+<span style="color:#ae81ff">2970</span> }
+</code></pre></div><p><code>Server</code>を初期化して、初期化した<code>Server</code>の<code>ListenAndServe</code>メソッドを呼び出す。<br>
+<code>Server</code>は<code>Handler</code>インタフェースを持つが、これがすごく重要。<br>
+具象型ではなく、インタフェースになっているのがポイント。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">2697</span> <span style="color:#75715e">// ListenAndServe listens on the TCP network address srv.Addr and then
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2698</span> <span style="color:#75715e">// calls Serve to handle requests on incoming connections.
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2699</span> <span style="color:#75715e">// Accepted connections are configured to enable TCP keep-alives.
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2700</span> <span style="color:#75715e">// If srv.Addr is blank, &#34;:http&#34; is used.
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2701</span> <span style="color:#75715e">// ListenAndServe always returns a non-nil error.
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2702</span> <span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">srv</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Server</span>) <span style="color:#a6e22e">ListenAndServe</span>() <span style="color:#66d9ef">error</span> {
+<span style="color:#ae81ff">2703</span>     <span style="color:#a6e22e">addr</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Addr</span>
+<span style="color:#ae81ff">2704</span>     <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">addr</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> {
+<span style="color:#ae81ff">2705</span>         <span style="color:#a6e22e">addr</span> = <span style="color:#e6db74">&#34;:http&#34;</span>
+<span style="color:#ae81ff">2706</span>     }
+<span style="color:#ae81ff">2707</span>     <span style="color:#a6e22e">ln</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;tcp&#34;</span>, <span style="color:#a6e22e">addr</span>)
+<span style="color:#ae81ff">2708</span>     <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+<span style="color:#ae81ff">2709</span>         <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+<span style="color:#ae81ff">2710</span>     }
+<span style="color:#ae81ff">2711</span>     <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">tcpKeepAliveListener</span>{<span style="color:#a6e22e">ln</span>.(<span style="color:#f92672">*</span><span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">TCPListener</span>)})
+<span style="color:#ae81ff">2712</span> }
+</code></pre></div><p>TCPサーバをListenしている。この後、<code>func (srv *Server) Serve(l net.Listener) error {}</code>や<code>func (c *conn) serve(ctx context.Context) {}</code>が順次実行され、TCPサーバとしての役割を全うするがここでは割愛する。（長いので）</p>
+<p>注目したいのは、始めにインスタンス化した<code>Server</code>インスタンスが後続の処理に引き継がれていること。</p>
+<ul>
+<li><code>func (srv *Server) Serve(l net.Listener) error {}</code>のレシーバは<code>Server</code>のポインタ</li>
+<li><code>func (c *conn) serve(ctx context.Context) {}</code>のレシーバは<code>conn</code>のポインタで、<code>conn</code>はメンバとして<code>Server</code>のポインタを保持している</li>
+</ul>
+<p>なぜ<code>Server</code>インスタンスが引き継がれることが重要かというと、<code>Server</code>が持っている<code>Handler</code>が後の処理で使われるため。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">1830</span>         <span style="color:#a6e22e">serverHandler</span>{<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">server</span>}.<span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">req</span>)
+</code></pre></div><p><code>func (c *conn) serve(ctx context.Context) {}</code>の中のこの処理で、引き継がれた<code>Server</code>が持つ<code>Handler</code>インタフェースを使って、dispatchが始まる。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">2560</span> <span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sh</span> <span style="color:#a6e22e">serverHandler</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">rw</span> <span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">req</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Request</span>) {
+<span style="color:#ae81ff">2561</span>     <span style="color:#a6e22e">handler</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">sh</span>.<span style="color:#a6e22e">srv</span>.<span style="color:#a6e22e">Handler</span>
+<span style="color:#ae81ff">2562</span>     <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">handler</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+<span style="color:#ae81ff">2563</span>         <span style="color:#a6e22e">handler</span> = <span style="color:#a6e22e">DefaultServeMux</span>
+<span style="color:#ae81ff">2564</span>     }
+<span style="color:#ae81ff">2565</span>     <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">RequestURI</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;*&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">Method</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;OPTIONS&#34;</span> {
+<span style="color:#ae81ff">2566</span>         <span style="color:#a6e22e">handler</span> = <span style="color:#a6e22e">globalOptionsHandler</span>{}
+<span style="color:#ae81ff">2567</span>     }
+<span style="color:#ae81ff">2568</span>     <span style="color:#a6e22e">handler</span>.<span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">rw</span>, <span style="color:#a6e22e">req</span>)
+<span style="color:#ae81ff">2569</span> }
+</code></pre></div><p>2561行目の<code>Handler</code>はinterfaceである。この<code>Handler</code>は、<code>http.ListenAndServe</code>関数の第２引数として指定された<code>Handler</code>である。
+<code>Handler</code>インタフェースを満たしていればどんな型であってもよいので、以降は<code>Handler</code>の実装により挙動が変わることになる（！）<br>
+ここからは<code>http.ListenAndServe</code>関数の第２引数を<code>nil</code>とした場合に使われるdefaultの<code>DefaultServeMux</code>の挙動を追っていく。
+<code>DefaultServeMux</code>はServeMux型で、もちろんServeMux型はServeHTTPを実装しており、<code>Handler</code>インタフェースを満たす。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">2326</span> <span style="color:#75715e">// ServeHTTP dispatches the request to the handler whose
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2327</span> <span style="color:#75715e">// pattern most closely matches the request URL.
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2328</span> <span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">mux</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ServeMux</span>) <span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Request</span>) {
+<span style="color:#ae81ff">2329</span>     <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">RequestURI</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;*&#34;</span> {
+<span style="color:#ae81ff">2330</span>         <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">ProtoAtLeast</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>) {
+<span style="color:#ae81ff">2331</span>             <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Set</span>(<span style="color:#e6db74">&#34;Connection&#34;</span>, <span style="color:#e6db74">&#34;close&#34;</span>)
+<span style="color:#ae81ff">2332</span>         }
+<span style="color:#ae81ff">2333</span>         <span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">WriteHeader</span>(<span style="color:#a6e22e">StatusBadRequest</span>)
+<span style="color:#ae81ff">2334</span>         <span style="color:#66d9ef">return</span>
+<span style="color:#ae81ff">2335</span>     }
+<span style="color:#ae81ff">2336</span>     <span style="color:#a6e22e">h</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">mux</span>.<span style="color:#a6e22e">Handler</span>(<span style="color:#a6e22e">r</span>)
+<span style="color:#ae81ff">2337</span>     <span style="color:#a6e22e">h</span>.<span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">r</span>)
+<span style="color:#ae81ff">2338</span> }
+</code></pre></div><p><code>mux.Handler(r)</code>で、事前に登録していたhandlerとURLのマッピング情報から実際にdispatchするhandlerを取得する。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">2133</span> <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ServeMux</span> <span style="color:#66d9ef">struct</span> {
+<span style="color:#ae81ff">2134</span>     <span style="color:#a6e22e">mu</span>    <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">RWMutex</span>
+<span style="color:#ae81ff">2135</span>     <span style="color:#a6e22e">m</span>     <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#a6e22e">muxEntry</span>
+<span style="color:#ae81ff">2136</span>     <span style="color:#a6e22e">hosts</span> <span style="color:#66d9ef">bool</span> <span style="color:#75715e">// whether any patterns contain hostnames
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">2137</span> }
+<span style="color:#ae81ff">2138</span>
+<span style="color:#ae81ff">2139</span> <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">muxEntry</span> <span style="color:#66d9ef">struct</span> {
+<span style="color:#ae81ff">2140</span>     <span style="color:#a6e22e">h</span>       <span style="color:#a6e22e">Handler</span>
+<span style="color:#ae81ff">2141</span>     <span style="color:#a6e22e">pattern</span> <span style="color:#66d9ef">string</span>
+<span style="color:#ae81ff">2142</span> }
+</code></pre></div><p><code>ServeMux</code>型は、キーがURLパターン、バリューが<code>Handler</code>を持つ<code>muxEntry</code>、なmap構造を持っており、ここにhandlerとURLのマッピング情報を保持している。<br>
+実は<code>http.HandleFunc()</code>や<code>http.Handle()</code>では、この<code>ServeMux</code>型のmにURLパターンとhandlerのマッピング情報が登録されている。</p>
+<p>最後に取得したhandlerが実行される。</p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<h1 id="主要な構成要素とhandlerインタフェース">主要な構成要素とHandlerインタフェース</h1>
+<p>ここまで、雑に標準のhttpサーバの挙動を追ったが、ごちゃごちゃしているので主要な構成要素について<code>Handler</code>インタフェースとの関わりという観点で整理する。</p>
+<table>
+<thead>
+<tr>
+<th>型</th>
+<th style="text-align:center"><code>Handler</code>インタフェースとの関わり</th>
+<th style="text-align:right">役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>http.Server</code></td>
+<td style="text-align:center"><code>Handler</code>インタフェースを持つ</td>
+<td style="text-align:right">TCPサーバ。handlerのディスパッチが始まるエントリポイント。Request、Responseを生成した後、持っている<code>Handler</code>インタフェースの<code>ServeHTTP</code>メソッドを呼び出す。</td>
+</tr>
+<tr>
+<td><code>http.ServeMux</code>  <code>http.DefaultServeMux</code>の型</td>
+<td style="text-align:center"><code>Handler</code>インタフェースを満たす。    <code>m map[string]muxEntry</code>に<code>Handler</code>が登録してある</td>
+<td style="text-align:right"><code>Server</code>に呼び出される。URLにマッチするhandlerを<code>m map[string]muxEntry</code>から取得し、そのhandlerの<code>ServeHTTP</code>メソッドを呼び出す。</td>
+</tr>
+<tr>
+<td><code>http.muxEntry</code>の<code>Handler</code></td>
+<td style="text-align:center"><code>Handler</code>インタフェースを満たす</td>
+<td style="text-align:right"><code>ServeMux</code>に呼び出される。<code>http.Handle()</code>や<code>http.HandleFunc</code>で登録される<code>Handler</code>インタフェースの正体がこれ。</td>
+</tr>
+</tbody>
+</table>
+<p>リクエストを受けてからhandlerがdispatchされるまでに、異なるレイヤで異なる働きをするものが実行されるが、レイヤ間の処理の受け渡しに<code>Handler</code>インタフェースが使われていることがわかる。</p>
+<p>つまり、ライブラリやフレームワークを実現するためには、<code>Handler</code>を持つ、もしくは<code>Handler</code>を満たすコンポーネントを開発してどこかのレイヤの実装を置き換える、または拡張すればよい。</p>
+<p>なので、フレームワークやライブラリが何をやっているか知りたいときは、<code>ServeHTTP</code>でgrepしてみるとよい。<code>ServeHTTP</code>メソッドを読んでみて、どのレイヤの処理を置き換えたり拡張したりしているのか考えると雰囲気が掴みやすい。</p>
+<h1 id="ライブラリやフレームワークの雰囲気">ライブラリやフレームワークの雰囲気</h1>
+<h2 id="middleware">middleware</h2>
+<p>middlewareは、前章の<code>muxEntry</code>の<code>Handler</code>のレイヤの処理の拡張を行うことで、様々なhandler間で共通の処理を上手く書くことできる。
+具体的にどう実装するか、は以下の記事に詳しい説明がある。</p>
+<p><a href="https://www.nicolasmerouze.com/middlewares-golang-best-practices-examples/">Middlewares in Go: Best practices and examples</a><br>
+<a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a><br>
+<a href="https://justinas.org/writing-http-middleware-in-go/">Writing HTTP Middleware in Go</a></p>
+<p><code>Handler</code>インタフェースを利用した、Decoratorパターンで実現できる。</p>
+<p>サードパーティだと<a href="https://github.com/gorilla/handlers">gorilla/handlers</a>のようなものがある。</p>
+<h2 id="router">router</h2>
+<p>routerは、前章の<code>ServeMux</code>のレイヤの処理の実装を別のコンポーネントに置き換える。
+<a href="https://github.com/gorilla/mux">gorilla/mux</a>や<a href="https://github.com/julienschmidt/httprouter">julienschmidt/httprouter</a>のようなものがある。<code>ServeMux</code>レイヤの処理を置き換えるので、ライブラリ独自のroutingを保持するデータ構造を持っていて、<code>ServeHTTP</code>メソッドの中で独自のroutingロジックを実装している。ここのroutingのロジックの実装をいい感じにすることで、個別のHTTPメソッドに対してhandlerを登録したり、path parameterのハンドリングができるようになる。</p>
+<p>ちなみに、<code>ServeMux</code>のレイヤの処理の実装を置き換えるので、それ以降の<code>muxEntry</code>の<code>Handler</code>レイヤの処理は必ずしも<code>Handler</code>インタフェースを満たしている必要はない。ライブラリ側でシグネチャを変えることもできるし、もちろん変えなくてもよい。</p>
+<h2 id="その他">その他</h2>
+<p>有名なフレームワークに、<a href="https://github.com/labstack/echo">labstack/echo</a>がある。このフレームワークでは、エントリポイントである<code>http.Server</code>をラップした<code>Echo</code>というコンポーネントで全ての処理を置き換えている。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">Echo</span> <span style="color:#66d9ef">struct</span> {
+		<span style="color:#a6e22e">stdLogger</span>        <span style="color:#f92672">*</span><span style="color:#a6e22e">stdLog</span>.<span style="color:#a6e22e">Logger</span>
+		<span style="color:#a6e22e">colorer</span>          <span style="color:#f92672">*</span><span style="color:#a6e22e">color</span>.<span style="color:#a6e22e">Color</span>
+		<span style="color:#a6e22e">premiddleware</span>    []<span style="color:#a6e22e">MiddlewareFunc</span>
+		<span style="color:#a6e22e">middleware</span>       []<span style="color:#a6e22e">MiddlewareFunc</span>
+		<span style="color:#a6e22e">maxParam</span>         <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+		<span style="color:#a6e22e">router</span>           <span style="color:#f92672">*</span><span style="color:#a6e22e">Router</span>
+		<span style="color:#a6e22e">notFoundHandler</span>  <span style="color:#a6e22e">HandlerFunc</span>
+		<span style="color:#a6e22e">pool</span>             <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">Pool</span>
+		<span style="color:#a6e22e">Server</span>           <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>
+		<span style="color:#a6e22e">TLSServer</span>        <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Server</span>
+		<span style="color:#a6e22e">Listener</span>         <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listener</span>
+		<span style="color:#a6e22e">TLSListener</span>      <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listener</span>
+		<span style="color:#a6e22e">AutoTLSManager</span>   <span style="color:#a6e22e">autocert</span>.<span style="color:#a6e22e">Manager</span>
+		<span style="color:#a6e22e">DisableHTTP2</span>     <span style="color:#66d9ef">bool</span>
+		<span style="color:#a6e22e">Debug</span>            <span style="color:#66d9ef">bool</span>
+		<span style="color:#a6e22e">HideBanner</span>       <span style="color:#66d9ef">bool</span>
+		<span style="color:#a6e22e">HidePort</span>         <span style="color:#66d9ef">bool</span>
+		<span style="color:#a6e22e">HTTPErrorHandler</span> <span style="color:#a6e22e">HTTPErrorHandler</span>
+		<span style="color:#a6e22e">Binder</span>           <span style="color:#a6e22e">Binder</span>
+		<span style="color:#a6e22e">Validator</span>        <span style="color:#a6e22e">Validator</span>
+		<span style="color:#a6e22e">Renderer</span>         <span style="color:#a6e22e">Renderer</span>
+		<span style="color:#a6e22e">Logger</span>           <span style="color:#a6e22e">Logger</span>
+	}
+</code></pre></div><p>TCPサーバとしての<code>Server</code>型のみ利用しており、<code>Server</code>型から<code>http.ServeMux</code>レイヤを呼び出すところのみ<code>Handler</code>インタフェースを使っているが、それ以外のところでは独自のシグネチャを採用している。</p>
+<p>以下は、echoのページにあるサンプル。</p>
+<pre tabindex="0"><code>package main
+
+import (
+	&quot;net/http&quot;
+
+	&quot;github.com/labstack/echo&quot;
+	&quot;github.com/labstack/echo/middleware&quot;
+)
+
+func main() {
+	// Echo instance
+	e := echo.New()
+
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// Routes
+	e.GET(&quot;/&quot;, hello)
+
+	// Start server
+	e.Logger.Fatal(e.Start(&quot;:1323&quot;))
+}
+
+// Handler
+func hello(c echo.Context) error {
+	return c.String(http.StatusOK, &quot;Hello, World!&quot;)
+}
+</code></pre><p>httpサーバの起動は<code>e.Start(&quot;:1323&quot;)</code>という独自の実装となっている。また、echoへのhandlerの登録は、httpパッケージの<code>Handler</code>インタフェースではなく、独自のシグネチャとなっていることがわかる。</p>
+<h1 id="まとめ">まとめ</h1>
+<ul>
+<li>Goでのhttpサーバの肝は<code>Handler</code>インタフェースなので、<code>Handler</code>インタフェースを中心に考えると雰囲気が掴みやすい。</li>
+<li><code>Handler</code>インタフェースの実装（=<code>ServeHTTP</code>）を追えば、各ライブラリやフレームワークが何をやっているか、雰囲気を掴める。</li>
+<li><code>Handler</code>というシンプルなインタフェースだけで拡張性や柔軟性をもたらしていて、すごい。</li>
+</ul>
+<h1 id="参考">参考</h1>
+<ul>
+<li><a href="https://www.nicolasmerouze.com/middlewares-golang-best-practices-examples/">Middlewares in Go: Best practices and examples</a></li>
+<li><a href="http://www.alexedwards.net/blog/making-and-using-middleware">Making and Using HTTP Middleware</a></li>
+<li><a href="https://justinas.org/writing-http-middleware-in-go/">Writing HTTP Middleware in Go</a></li>
+<li><a href="https://github.com/gorilla/handlers">gorilla/handlers</a></li>
+<li><a href="https://github.com/gorilla/mux">gorilla/mux</a></li>
+<li><a href="https://github.com/julienschmidt/httprouter">julienschmidt/httprouter</a></li>
+<li><a href="https://github.com/labstack/echo">labstack/echo</a></li>
+</ul></section>
+
+  
+  
+  <footer class="post-tags">
+     
+    <a href="https://himetani.github.io/tags/golang">golang</a>
+     
+    <a href="https://himetani.github.io/tags/http">http</a>
+    
+  </footer>
+  
+
+  
+  
+  
+  <nav class="post-nav">
+    
+    <a class="prev" href="https://himetani.github.io/posts/vgo-echo-sample/"><span>←</span><span>go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする</span></a>
+     
+    <a class="next" href="https://himetani.github.io/posts/for-goroutine/"><span>for文の中でmethodをgoroutine化する</span><span>→</span></a>
+    
+  </nav>
+  
+
+  
+  
+  <div id="disqus_thread" class="post-comments"></div>
+  <script>
+    var disqusShortname = 'himetani';
+    var script = document.createElement('script');
+    script.src = 'https://' + disqusShortname + '.disqus.com/embed.js';
+    script.setAttribute('data-timestamp', +new Date());
+    document.head.appendChild(script);
+  </script>
+  
+</article>
+
+</main>
+
+    <footer class="footer">
+  <p>&copy; 2021 <a href="https://himetani.github.io">himetani&#39;s cafe</a></p>
+  <p>Powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>️</p>
+  <p>
+    <a href="https://github.com/nanxiaobei/hugo-paper" rel="noopener" target="_blank">Paper 5.1</a>
+  </p>
+</footer>
+
+  </body>
+</html>

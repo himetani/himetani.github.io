@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html lang="ja">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  
+  <title>SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない - himetani&#39;s cafe</title>
+
+  
+  
+  <meta name="description" content="GolangでSIGKILLやSITGTOPをcatchしようとしてしまったときのことを書いた." />
+  <meta name="author" content="" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/app.min.css" />
+
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/an-old-hope.min.css" />
+  <script
+    defer
+    src="https://himetani.github.io/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/theme.png" />
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/github.svg" />
+  
+
+  
+  <link rel="icon" href="https://himetani.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://himetani.github.io/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.88.1" />
+
+  
+  
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-118965980-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  
+  
+  
+  <meta property="og:title" content="SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない" />
+<meta property="og:description" content="GolangでSIGKILLやSITGTOPをcatchしようとしてしまったときのことを書いた." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://himetani.github.io/posts/can_not_catch_sigkill_and_sigstop/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-08-05T18:03:09+09:00" />
+<meta property="article:modified_time" content="2018-08-05T18:03:09+09:00" />
+
+
+  
+  <meta itemprop="name" content="SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない">
+<meta itemprop="description" content="GolangでSIGKILLやSITGTOPをcatchしようとしてしまったときのことを書いた."><meta itemprop="datePublished" content="2018-08-05T18:03:09+09:00" />
+<meta itemprop="dateModified" content="2018-08-05T18:03:09+09:00" />
+<meta itemprop="wordCount" content="788">
+<meta itemprop="keywords" content="golang," />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない"/>
+<meta name="twitter:description" content="GolangでSIGKILLやSITGTOPをcatchしようとしてしまったときのことを書いた."/>
+
+  
+  
+</head>
+
+
+  <body class="not-ready" data-menu="false">
+    <header class="header">
+  
+  <p class="logo">
+    <a class="site-name" href="https://himetani.github.io">himetani&#39;s cafe</a><a class="btn-dark"></a>
+  </p>
+  
+
+  <script>
+    let bodyClx = document.body.classList;
+    let btnDark = document.querySelector('.btn-dark');
+    let sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+    let darkVal = localStorage.getItem('dark');
+
+    let setDark = (isDark) => {
+      bodyClx[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark ? 'yes' : 'no');
+    };
+
+    setDark(darkVal ? darkVal === 'yes' : sysDark.matches);
+    requestAnimationFrame(() => bodyClx.remove('not-ready'));
+
+    btnDark.addEventListener('click', () => setDark(!bodyClx.contains('dark')));
+    sysDark.addEventListener('change', (event) => setDark(event.matches));
+  </script>
+
+  
+  
+
+  
+  <nav class="social">
+    
+    <a
+      class="twitter"
+      style="--url: url(./twitter.svg)"
+      href="https://twitter.com/himetani_cafe"
+      target="_blank"
+    ></a>
+    
+    <a
+      class="github"
+      style="--url: url(./github.svg)"
+      href="https://github.com/himetani"
+      target="_blank"
+    ></a>
+    
+  </nav>
+  
+</header>
+
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-title">
+    <p>
+      <time>Aug 5, 2018</time>
+      
+    </p>
+    <h1>SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない</h1>
+  </header>
+  <section class="post-content"><p>GolangでSIGKILLやSITGTOPをcatchしようとしてしまったときのことを書いた.</p>
+<h1 id="やらかしたこと">やらかしたこと　</h1>
+<p>Goで常駐プロセスを動かすときに、SIGNALをトラップしてgracefulにプロセスを止めることができるように以下のようなプログラムを書くことがあった.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;context&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;os&#34;</span>
+	<span style="color:#e6db74">&#34;os/signal&#34;</span>
+	<span style="color:#e6db74">&#34;syscall&#34;</span>
+	<span style="color:#e6db74">&#34;time&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Signal</span>)
+	<span style="color:#a6e22e">signal</span>.<span style="color:#a6e22e">Notify</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGINT</span>)
+
+	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>())
+
+	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+		<span style="color:#a6e22e">sig</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">c</span>
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Got %s signal. Aborting...\n&#34;</span>, <span style="color:#a6e22e">sig</span>)
+		<span style="color:#a6e22e">cancel</span>()
+	}()
+
+	<span style="color:#a6e22e">doSomething</span>(<span style="color:#a6e22e">ctx</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">doSomething</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) {
+	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;End of doSomething func&#34;</span>)
+	<span style="color:#66d9ef">for</span> {
+		<span style="color:#66d9ef">select</span> {
+		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Tick</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>):
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;hello&#34;</span>)
+		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
+			<span style="color:#66d9ef">return</span>
+		}
+	}
+}
+</code></pre></div><p>このプログラムを停止するには、このプロセスにSIGINTシグナルを送ればよい.<br>
+SIGKILLやSIGSTOPをでもgracefulに停止できるようにしようと思って以下のように変えてみたが、これは間違いだ.
+コンパイルエラーもランタイムエラーも起きないが、シグナルをcatchすることはできない.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">signal</span>.<span style="color:#a6e22e">Notify</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGINT</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGKILL</span>, <span style="color:#a6e22e">syscall</span>.<span style="color:#a6e22e">SIGSTOP</span>)
+</code></pre></div><h2 id="sigkill-sigstopはcatchできない">SIGKILL, SIGSTOPはcatchできない</h2>
+<p>そもそもSIGKILLとSITSTOPは、catchできないシグナルだった&hellip;<br>
+<a href="https://en.wikipedia.org/wiki/Signal_(IPC)#SIGKILL">Signal (IPC)</a></p>
+<p>Goのオフィシャルドキュメントにも明記してある.<br>
+<code>The signals SIGKILL and SIGSTOP may not be caught by a program, and therefore cannot be affected by this package.</code></p>
+<p><a href="https://golang.org/pkg/os/signal/">Package signal</a></p>
+<p>上記のようなコードはコンパイルエラーにするべきだ、というissueが上がっていましたが、見送られたようです.<br>
+<a href="https://github.com/golang/go/issues/9463">os/signal: Prevent developers from catching SIGKILL and SIGSTOP</a></p>
+<p>理由は以下.</p>
+<ul>
+<li><code>signal.Notify(c chan&lt;- os.Signal, sig ...os.Signal)</code>のAPIとしては正しいのでコンパイルエラーにすべきでない</li>
+<li>このような問題の検出には、go vetが役に立つ</li>
+<li>Go 2だと改善する？</li>
+<li>ランタイムエラーとするにはerrorを返すようにAPIを変更するかpanicを起こす必要があるが、いずれも既存のコードの互換性が壊れるので厳しい</li>
+</ul>
+<p>などなど</p>
+<h1 id="まとめ">まとめ</h1>
+<ul>
+<li>SIGKILLとSIGSTOPは、そもそもcatchできない.</li>
+<li>GoでSIGKILLとSIGSTOPをcatchするコードは、コンパイルエラーにもランタイムエラーにもならないので間違って書かないように気をつけましょう.</li>
+</ul></section>
+
+  
+  
+  <footer class="post-tags">
+     
+    <a href="https://himetani.github.io/tags/golang">golang</a>
+    
+  </footer>
+  
+
+  
+  
+  
+  <nav class="post-nav">
+     
+    <a class="next" href="https://himetani.github.io/posts/the_site_reliablity_workbook_chapter12/"><span>The Site Reliability Workbookの12章を読んだ</span><span>→</span></a>
+    
+  </nav>
+  
+
+  
+  
+  <div id="disqus_thread" class="post-comments"></div>
+  <script>
+    var disqusShortname = 'himetani';
+    var script = document.createElement('script');
+    script.src = 'https://' + disqusShortname + '.disqus.com/embed.js';
+    script.setAttribute('data-timestamp', +new Date());
+    document.head.appendChild(script);
+  </script>
+  
+</article>
+
+</main>
+
+    <footer class="footer">
+  <p>&copy; 2021 <a href="https://himetani.github.io">himetani&#39;s cafe</a></p>
+  <p>Powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>️</p>
+  <p>
+    <a href="https://github.com/nanxiaobei/hugo-paper" rel="noopener" target="_blank">Paper 5.1</a>
+  </p>
+</footer>
+
+  </body>
+</html>

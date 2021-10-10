@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html lang="ja">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  
+  <title>非rootユーザでSpring Bootアプリをサービスとして起動させる - himetani&#39;s cafe</title>
+
+  
+  
+  <meta name="description" content="非rootユーザでSpring Bootアプリをサービスとして起動させるためにやったことを書きました。" />
+  <meta name="author" content="" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/app.min.css" />
+
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/an-old-hope.min.css" />
+  <script
+    defer
+    src="https://himetani.github.io/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/theme.png" />
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/github.svg" />
+  
+
+  
+  <link rel="icon" href="https://himetani.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://himetani.github.io/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.88.1" />
+
+  
+  
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-118965980-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  
+  
+  
+  <meta property="og:title" content="非rootユーザでSpring Bootアプリをサービスとして起動させる" />
+<meta property="og:description" content="非rootユーザでSpring Bootアプリをサービスとして起動させるためにやったことを書きました。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://himetani.github.io/posts/spring-boot-non-root/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-06-11T21:26:03+09:00" />
+<meta property="article:modified_time" content="2017-06-11T21:26:03+09:00" />
+
+
+  
+  <meta itemprop="name" content="非rootユーザでSpring Bootアプリをサービスとして起動させる">
+<meta itemprop="description" content="非rootユーザでSpring Bootアプリをサービスとして起動させるためにやったことを書きました。"><meta itemprop="datePublished" content="2017-06-11T21:26:03+09:00" />
+<meta itemprop="dateModified" content="2017-06-11T21:26:03+09:00" />
+<meta itemprop="wordCount" content="1506">
+<meta itemprop="keywords" content="spring-boot," />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="非rootユーザでSpring Bootアプリをサービスとして起動させる"/>
+<meta name="twitter:description" content="非rootユーザでSpring Bootアプリをサービスとして起動させるためにやったことを書きました。"/>
+
+  
+  
+</head>
+
+
+  <body class="not-ready" data-menu="false">
+    <header class="header">
+  
+  <p class="logo">
+    <a class="site-name" href="https://himetani.github.io">himetani&#39;s cafe</a><a class="btn-dark"></a>
+  </p>
+  
+
+  <script>
+    let bodyClx = document.body.classList;
+    let btnDark = document.querySelector('.btn-dark');
+    let sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+    let darkVal = localStorage.getItem('dark');
+
+    let setDark = (isDark) => {
+      bodyClx[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark ? 'yes' : 'no');
+    };
+
+    setDark(darkVal ? darkVal === 'yes' : sysDark.matches);
+    requestAnimationFrame(() => bodyClx.remove('not-ready'));
+
+    btnDark.addEventListener('click', () => setDark(!bodyClx.contains('dark')));
+    sysDark.addEventListener('change', (event) => setDark(event.matches));
+  </script>
+
+  
+  
+
+  
+  <nav class="social">
+    
+    <a
+      class="twitter"
+      style="--url: url(./twitter.svg)"
+      href="https://twitter.com/himetani_cafe"
+      target="_blank"
+    ></a>
+    
+    <a
+      class="github"
+      style="--url: url(./github.svg)"
+      href="https://github.com/himetani"
+      target="_blank"
+    ></a>
+    
+  </nav>
+  
+</header>
+
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-title">
+    <p>
+      <time>Jun 11, 2017</time>
+      
+    </p>
+    <h1>非rootユーザでSpring Bootアプリをサービスとして起動させる</h1>
+  </header>
+  <section class="post-content"><p>非rootユーザでSpring Bootアプリをサービスとして起動させるためにやったことを書きました。</p>
+<h1 id="spring-bootとは">Spring Bootとは</h1>
+<ul>
+<li>Springフレームワークをより手軽に使うことができるフレームワーク</li>
+<li>Embedded Tomcatを持ったexecutable jarがビルドで生成され、javaコマンドに渡すことでアプリを起動できる</li>
+</ul>
+<p>exucutable jarはとても魅力的な特徴で、<del>Javaの開発とは思えないくらい</del>簡単に、開発環境においてに開発、デバッグすることができます。
+Javaの実行環境を用意さえすれば、簡単にアプリケーションを立ち上げることができます。
+コンソール経由で実行する場合、特別な環境設定は不要です。(IDE経由で動かす場合は、Spring Boot系のプラグインの設定が必要)</p>
+<p>exucatble jarを使ってアプリを起動するには以下のコマンドを使用します。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># javaコマンドから起動</span>
+$ java -jar application.jar
+
+<span style="color:#75715e"># Spring Boot Maven plugin経由で起動</span>
+$ cd /path/to/pom.xml
+$ mvn clean spring-boot:run
+</code></pre></div><p>デフォルトの設定では、8080ポートでアプリケーションが起動されます。</p>
+<h1 id="fully-executable-jar">fully executable jar</h1>
+<p>前述した、javaコマンドやmvnコマンドを使ったアプリケーションの起動はフォアグラウンドプロセスで起動するため、そのままStaging環境やProduction環境のアプリケーションサーバにデプロイし、サービスとして起動することができません。
+しかし、Spring Bootではサービスとして起動できるビルド成果物も簡単に作成することができます。
+サービスとして起動できるビルド成果物のことを<strong>fully executable jar</strong>と言います。
+pom.xmlに以下の設定を記述すると、ビルド後にtargetディレクトリ配下にできるjarファイルが<strong>fully executable jar</strong>となります。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
+    <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+    <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;configuration&gt;</span>
+        <span style="color:#f92672">&lt;executable&gt;</span>true<span style="color:#f92672">&lt;/executable&gt;</span>
+        <span style="color:#f92672">&lt;mode&gt;</span>service<span style="color:#f92672">&lt;/mode&gt;</span>
+    <span style="color:#f92672">&lt;/configuration&gt;</span>
+<span style="color:#f92672">&lt;/plugin&gt;</span>
+</code></pre></div><p>開発環境ではexecutable jarを、Staging環境やProduction環境ではfully executable jarをビルドしたいときは、Mavenのプロファイル機能を使ってビル成果物を切り替えることができます。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;profiles&gt;</span>
+    <span style="color:#f92672">&lt;profile&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>dev<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;activation&gt;</span>
+            <span style="color:#f92672">&lt;activeByDefault&gt;</span>true<span style="color:#f92672">&lt;/activeByDefault&gt;</span>
+        <span style="color:#f92672">&lt;/activation&gt;</span>
+        <span style="color:#f92672">&lt;properties&gt;</span>
+            <span style="color:#f92672">&lt;executable&gt;</span>false<span style="color:#f92672">&lt;/etc.executable&gt;</span>
+        <span style="color:#f92672">&lt;/properties&gt;</span>
+    <span style="color:#f92672">&lt;/profile&gt;</span>
+    <span style="color:#f92672">&lt;profile&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>stg<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;activation&gt;</span>
+            <span style="color:#f92672">&lt;activeByDefault&gt;</span>false<span style="color:#f92672">&lt;/activeByDefault&gt;</span>
+        <span style="color:#f92672">&lt;/activation&gt;</span>
+        <span style="color:#f92672">&lt;properties&gt;</span>
+            <span style="color:#f92672">&lt;executable&gt;</span>true<span style="color:#f92672">&lt;/etc.executable&gt;</span>
+        <span style="color:#f92672">&lt;/properties&gt;</span>
+    <span style="color:#f92672">&lt;/profile&gt;</span>
+    <span style="color:#f92672">&lt;profile&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>prod<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;activation&gt;</span>
+            <span style="color:#f92672">&lt;activeByDefault&gt;</span>false<span style="color:#f92672">&lt;/activeByDefault&gt;</span>
+        <span style="color:#f92672">&lt;/activation&gt;</span>
+        <span style="color:#f92672">&lt;properties&gt;</span>
+            <span style="color:#f92672">&lt;executable&gt;</span>true<span style="color:#f92672">&lt;/etc.executable&gt;</span>
+        <span style="color:#f92672">&lt;/properties&gt;</span>
+    <span style="color:#f92672">&lt;/profile&gt;</span>
+<span style="color:#f92672">&lt;/profiles&gt;</span>
+<span style="color:#f92672">&lt;plugin&gt;</span>
+    <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+    <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;configuration&gt;</span>
+        <span style="color:#f92672">&lt;executable&gt;</span>${executable}<span style="color:#f92672">&lt;/executable&gt;</span>
+        <span style="color:#f92672">&lt;mode&gt;</span>service<span style="color:#f92672">&lt;/mode&gt;</span>
+    <span style="color:#f92672">&lt;/configuration&gt;</span>
+<span style="color:#f92672">&lt;/plugin&gt;</span>
+</code></pre></div><p>ビルドコマンド</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># dev</span>
+mvn clean package
+
+<span style="color:#75715e"># staging</span>
+mvn clean package -P stg
+
+<span style="color:#75715e"># production</span>
+mvn clean package -P prod
+</code></pre></div><p><strong>fully executable jar</strong>としてビルドされたjarファイルは、一般的なサービススクリプトのようにプロセスを制御することができます。init.dやsystemdに登録することもできます。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cd /path/to/jar
+$ ./application.jar <span style="color:#f92672">[</span>start | stop | status | restart<span style="color:#f92672">]</span>
+</code></pre></div><h1 id="非rootユーザで起動させる">非rootユーザで起動させる</h1>
+<p>実運用では、Spring Bootアプリのサービスを非rootユーザで起動させるようなケースがあると思います。
+しかし、default設定では、非rootユーザで<strong>fully executable jar</strong>をサービスとして起動させることができません。
+理由は二つあります。</p>
+<ol>
+<li>pidファイルの出力先ディレクトリに書き込み権限がない (defaultでは/var/run)</li>
+<li>logの出力先ディレクトリに書き込み権限がない       (defaultでは/var/log)</li>
+</ol>
+<p>権限周りの設定変更がされていない限り、/var/runや/var/logには非rootユーザに書き込み権限はありません。
+そこでpidファイルの出力先とlogファイルの出力先を変更する必要があります。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
+    <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+    <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;configuration&gt;</span>
+        <span style="color:#f92672">&lt;executable&gt;</span>true<span style="color:#f92672">&lt;/executable&gt;</span>
+        <span style="color:#f92672">&lt;mode&gt;</span>service<span style="color:#f92672">&lt;/mode&gt;</span>
+        <span style="color:#f92672">&lt;embeddedLaunchScriptProperties&gt;</span>
+            <span style="color:#f92672">&lt;pidFolder&gt;</span>/path/to/pidFile<span style="color:#f92672">&lt;/pidFolder&gt;</span>
+            <span style="color:#f92672">&lt;logFolder&gt;</span>/path/to/logFile<span style="color:#f92672">&lt;/logFolder&gt;</span>
+        <span style="color:#f92672">&lt;/embeddedLaunchScriptProperties&gt;</span>
+    <span style="color:#f92672">&lt;/configuration&gt;</span>
+<span style="color:#f92672">&lt;/plugin&gt;</span>
+</code></pre></div><p><strong>fully executable jar</strong>を起動させる非rootユーザに書き込み権限があるディレクトリを指定することで、サービスを起動できるようになります。</p>
+<h1 id="まとめ">まとめ</h1>
+<p>Spring Bootをサービスとして起動させるには、Spring Boot Maven Pluginの設定変更をする。</p>
+<ol>
+<li>ビルド成果物が<strong>fully executable jar</strong>となるように、<!-- raw HTML omitted -->オプションをtrueにする</li>
+<li>pidファイルとログの出力先を実行ユーザの書き込み権限のあるディレクトリに変更する(<!-- raw HTML omitted -->, <!-- raw HTML omitted -->オプション)</li>
+</ol>
+<h1 id="参考">参考</h1>
+<p><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html">59. Installing Spring Boot applications</a></p></section>
+
+  
+  
+  <footer class="post-tags">
+     
+    <a href="https://himetani.github.io/tags/spring-boot">spring-boot</a>
+    
+  </footer>
+  
+
+  
+  
+  
+  <nav class="post-nav">
+    
+    <a class="prev" href="https://himetani.github.io/posts/for-goroutine/"><span>←</span><span>for文の中でmethodをgoroutine化する</span></a>
+     
+    <a class="next" href="https://himetani.github.io/posts/edit_simplenote_with_vim/"><span>Vimでsimplenoteを編集する</span><span>→</span></a>
+    
+  </nav>
+  
+
+  
+  
+  <div id="disqus_thread" class="post-comments"></div>
+  <script>
+    var disqusShortname = 'himetani';
+    var script = document.createElement('script');
+    script.src = 'https://' + disqusShortname + '.disqus.com/embed.js';
+    script.setAttribute('data-timestamp', +new Date());
+    document.head.appendChild(script);
+  </script>
+  
+</article>
+
+</main>
+
+    <footer class="footer">
+  <p>&copy; 2021 <a href="https://himetani.github.io">himetani&#39;s cafe</a></p>
+  <p>Powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>️</p>
+  <p>
+    <a href="https://github.com/nanxiaobei/hugo-paper" rel="noopener" target="_blank">Paper 5.1</a>
+  </p>
+</footer>
+
+  </body>
+</html>

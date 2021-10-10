@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html lang="ja">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  
+  <title>go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする - himetani&#39;s cafe</title>
+
+  
+  
+  <meta name="description" content="go modules(vgo)でecho依存のプロジェクトをビルドする
+go modules(vgo)でlabstack/echoを使ったプロジェクトをビルドするときにやったことを書いた。" />
+  <meta name="author" content="" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/app.min.css" />
+
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/an-old-hope.min.css" />
+  <script
+    defer
+    src="https://himetani.github.io/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/theme.png" />
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/github.svg" />
+  
+
+  
+  <link rel="icon" href="https://himetani.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://himetani.github.io/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.88.1" />
+
+  
+  
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-118965980-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  
+  
+  
+  <meta property="og:title" content="go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする" />
+<meta property="og:description" content="go modules(vgo)でecho依存のプロジェクトをビルドする
+go modules(vgo)でlabstack/echoを使ったプロジェクトをビルドするときにやったことを書いた。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://himetani.github.io/posts/vgo-echo-sample/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-07-14T19:47:30+09:00" />
+<meta property="article:modified_time" content="2018-07-14T19:47:30+09:00" />
+
+
+  
+  <meta itemprop="name" content="go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする">
+<meta itemprop="description" content="go modules(vgo)でecho依存のプロジェクトをビルドする
+go modules(vgo)でlabstack/echoを使ったプロジェクトをビルドするときにやったことを書いた。"><meta itemprop="datePublished" content="2018-07-14T19:47:30+09:00" />
+<meta itemprop="dateModified" content="2018-07-14T19:47:30+09:00" />
+<meta itemprop="wordCount" content="4429">
+<meta itemprop="keywords" content="golang," />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする"/>
+<meta name="twitter:description" content="go modules(vgo)でecho依存のプロジェクトをビルドする
+go modules(vgo)でlabstack/echoを使ったプロジェクトをビルドするときにやったことを書いた。"/>
+
+  
+  
+</head>
+
+
+  <body class="not-ready" data-menu="false">
+    <header class="header">
+  
+  <p class="logo">
+    <a class="site-name" href="https://himetani.github.io">himetani&#39;s cafe</a><a class="btn-dark"></a>
+  </p>
+  
+
+  <script>
+    let bodyClx = document.body.classList;
+    let btnDark = document.querySelector('.btn-dark');
+    let sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+    let darkVal = localStorage.getItem('dark');
+
+    let setDark = (isDark) => {
+      bodyClx[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark ? 'yes' : 'no');
+    };
+
+    setDark(darkVal ? darkVal === 'yes' : sysDark.matches);
+    requestAnimationFrame(() => bodyClx.remove('not-ready'));
+
+    btnDark.addEventListener('click', () => setDark(!bodyClx.contains('dark')));
+    sysDark.addEventListener('change', (event) => setDark(event.matches));
+  </script>
+
+  
+  
+
+  
+  <nav class="social">
+    
+    <a
+      class="twitter"
+      style="--url: url(./twitter.svg)"
+      href="https://twitter.com/himetani_cafe"
+      target="_blank"
+    ></a>
+    
+    <a
+      class="github"
+      style="--url: url(./github.svg)"
+      href="https://github.com/himetani"
+      target="_blank"
+    ></a>
+    
+  </nav>
+  
+</header>
+
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-title">
+    <p>
+      <time>Jul 14, 2018</time>
+      
+    </p>
+    <h1>go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする</h1>
+  </header>
+  <section class="post-content"><h1 id="go-modulesvgoでecho依存のプロジェクトをビルドする">go modules(vgo)でecho依存のプロジェクトをビルドする</h1>
+<p>go modules(<code>vgo</code>)で<code>labstack/echo</code>を使ったプロジェクトをビルドするときにやったことを書いた。</p>
+<h2 id="はじめに">はじめに</h2>
+<p>go modulesが<code>go</code>コマンドにマージされ、いよいよgo 1.11のリリースで<code>go</code>コマンドから<code>vgo</code>として提案されたgo modulesが使えるようになるということで、試してみた.</p>
+<ul>
+<li><a href="https://groups.google.com/forum/#!topic/golang-dev/a5PqQuBljF4">go modules have landed</a></li>
+</ul>
+<p><code>vgo</code>に関する記事を軽く読み流したことがあり、<code>vgo</code>がどういうものか知っている + 詳細な導入手順の記事などは真剣に読んではいない、という状態で色々試したことを書く.<br>
+なお、go 1.11を手元でビルドすれば<code>go</code>コマンドからgo modulesが使えるが、今回はプロトタイプの<code>vgo</code>コマンドで試した.</p>
+<ul>
+<li><a href="https://dave.cheney.net/2018/07/14/taking-go-modules-for-a-spin">Taking Go modules for a spin</a></li>
+</ul>
+<p><code>vgo</code>関連のブログポストやドキュメントへのリンクは、オフィシャルのwikiにまとまっている.</p>
+<ul>
+<li><a href="https://github.com/golang/go/wiki/vgo">vgo・golang/go Wiki</a></li>
+</ul>
+<h2 id="vgoをインストール">vgoをインストール.</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#960050;background-color:#1e0010">$</span> <span style="color:#66d9ef">go</span> <span style="color:#a6e22e">get</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">u</span> <span style="color:#a6e22e">golang</span>.<span style="color:#a6e22e">org</span><span style="color:#f92672">/</span><span style="color:#a6e22e">x</span><span style="color:#f92672">/</span><span style="color:#a6e22e">vgo</span> 
+
+<span style="color:#960050;background-color:#1e0010">$</span> <span style="color:#a6e22e">vgo</span> <span style="color:#a6e22e">version</span>
+<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">version</span> <span style="color:#a6e22e">go1</span><span style="color:#ae81ff">.10</span> <span style="color:#a6e22e">darwin</span><span style="color:#f92672">/</span><span style="color:#a6e22e">amd64</span> <span style="color:#66d9ef">go</span>:<span style="color:#ae81ff">2018</span><span style="color:#f92672">-</span><span style="color:#ae81ff">02</span><span style="color:#f92672">-</span><span style="color:#ae81ff">20.1</span>
+</code></pre></div><h2 id="サンプルプロジェクトのコード">サンプルプロジェクトのコード</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+
+	<span style="color:#e6db74">&#34;github.com/labstack/echo&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/labstack/echo/middleware&#34;</span>
+)
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">e</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">echo</span>.<span style="color:#a6e22e">New</span>()
+	<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Use</span>(<span style="color:#a6e22e">middleware</span>.<span style="color:#a6e22e">Logger</span>())
+
+	<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">GET</span>(<span style="color:#e6db74">&#34;/hello&#34;</span>, <span style="color:#a6e22e">hello</span>)
+
+	<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Logger</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">Start</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>))
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">hello</span>(<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">echo</span>.<span style="color:#a6e22e">Context</span>) <span style="color:#66d9ef">error</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">String</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">StatusOK</span>, <span style="color:#e6db74">&#34;hello world!&#34;</span>)
+}
+</code></pre></div><h2 id="最初のビルド">最初のビルド</h2>
+<p>新しく作るプロジェクトでかつvendorディレクトリを持たないので、ドキュメント(<a href="https://github.com/golang/go/wiki/vgo-user-guide#new-project-setup">New Project Setup</a>)にしたがってOption 1の通りにコマンドを実行した。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ cd $GOPATH/src/&lt;project path&gt;
+$ touch go.mod
+$ vgo build ./...
+go: finding github.com/labstack/echo/middleware latest
+go: finding github.com/labstack/echo v1.4.4
+go: downloading github.com/labstack/echo v1.4.4
+go: finding github.com/labstack/gommon/color latest
+go: finding github.com/labstack/gommon v0.2.1
+go: downloading github.com/labstack/gommon v0.2.1
+go: finding gopkg.in/labstack/echo.v1 v1.4.4
+go: downloading gopkg.in/labstack/echo.v1 v1.4.4
+go: finding golang.org/x/net/context latest
+go: finding golang.org/x/net latest
+go: downloading golang.org/x/net v0.0.0-20180712202826-d0887baf81f4
+go: finding golang.org/x/net/websocket latest
+go: finding github.com/labstack/gommon/log latest
+go: finding github.com/valyala/fasttemplate latest
+go: downloading github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4
+go: finding github.com/mattn/go-isatty v0.0.3
+go: downloading github.com/mattn/go-isatty v0.0.3
+go: finding github.com/mattn/go-colorable v0.0.9
+go: downloading github.com/mattn/go-colorable v0.0.9
+go: finding github.com/valyala/bytebufferpool latest
+go: downloading github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a
+<span style="color:#75715e"># github.com/himetani/vgo-echo-sample</span>
+./main.go:14:3: e.GET undefined <span style="color:#f92672">(</span>type *<span style="color:#e6db74">&#34;github.com/labstack/echo&#34;</span>.Echo has no field or method GET, but does have Get<span style="color:#f92672">)</span>
+./main.go:16:10: e.Logger.Fatal undefined <span style="color:#f92672">(</span>type func<span style="color:#f92672">()</span> *<span style="color:#e6db74">&#34;github.com/labstack/gommon/log&#34;</span>.Logger has no field or method Fatal<span style="color:#f92672">)</span>
+./main.go:16:18: e.Start undefined <span style="color:#f92672">(</span>type *<span style="color:#e6db74">&#34;github.com/labstack/echo&#34;</span>.Echo has no field or method Start<span style="color:#f92672">)</span>
+</code></pre></div><p>ビルドは失敗した。</p>
+<h2 id="何が起きたか">何が起きたか?</h2>
+<p>1, <code>go.mod</code>、<code>go.sum</code>への依存情報の書き込み.<br>
+プロジェクト自体が依存するライブラリ以外に、依存するライブラリが依存するライブラリの情報も書き込まれていた.
+依存するライブラリが依存するライブラリの依存情報は、<code>go.mod</code>の中では<code>// indirect</code>のコメントが書いてあった.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># go.mod</span>
+module github.com/himetani/vgo-echo-sample
+
+require <span style="color:#f92672">(</span>
+        github.com/labstack/echo v1.4.4
+        github.com/labstack/gommon v0.2.1 // indirect
+        github.com/mattn/go-colorable v0.0.9 // indirect
+        github.com/mattn/go-isatty v0.0.3 // indirect
+        github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a // indirect
+        github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
+        golang.org/x/net v0.0.0-20180712202826-d0887baf81f4 // indirect
+        gopkg.in/labstack/echo.v1 v1.4.4 // indirect
+<span style="color:#f92672">)</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># go.sum</span>
+github.com/labstack/echo v1.4.4 h1:1bEiBNeGSUKxcPDGfZ/7IgdhJJZx8wV/pICJh4W2NJI<span style="color:#f92672">=</span>
+github.com/labstack/echo v1.4.4/go.mod h1:0INS7j/VjnFxD4E2wkz67b8cVwCLbBmJyDaka6Cmk1s<span style="color:#f92672">=</span>
+github.com/labstack/gommon v0.2.1 h1:C+I4NYknueQncqKYZQ34kHsLZJVeB5KwPUhnO0nmbpU<span style="color:#f92672">=</span>
+github.com/labstack/gommon v0.2.1/go.mod h1:/tj9csK2iPSBvn+3NLM9e52usepMtrd5ilFYA+wQNJ4<span style="color:#f92672">=</span>
+github.com/mattn/go-colorable v0.0.9 h1:UVL0vNpWh04HeJXV0KLcaT7r06gOH2l4OW6ddYRUIY4<span style="color:#f92672">=</span>
+github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU<span style="color:#f92672">=</span>
+github.com/mattn/go-isatty v0.0.3 h1:ns/ykhmWi7G9O+8a448SecJU3nSMBXJfqQkl0upE1jI<span style="color:#f92672">=</span>
+github.com/mattn/go-isatty v0.0.3/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4<span style="color:#f92672">=</span>
+github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a h1:AOcehBWpFhYPYw0ioDTppQzgI8pAAahVCiMSKTp9rbo<span style="color:#f92672">=</span>
+github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc<span style="color:#f92672">=</span>
+github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 h1:gKMu1Bf6QINDnvyZuTaACm9ofY+PRh+5vFz4oxBZeF8<span style="color:#f92672">=</span>
+github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4/go.mod h1:50wTf68f99/Zt14pr046Tgt3Lp2vLyFZKzbFXTOabXw<span style="color:#f92672">=</span>
+golang.org/x/net v0.0.0-20180712202826-d0887baf81f4 h1:KDF3PK6A+dkI7c4O8QbMtJqcXE3LdNJFGZECIlifQOg<span style="color:#f92672">=</span>
+golang.org/x/net v0.0.0-20180712202826-d0887baf81f4/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4<span style="color:#f92672">=</span>
+gopkg.in/labstack/echo.v1 v1.4.4 h1:7OfDGi3z6gFaNSepZ92pgetqmLsPJyBpTfHjTCxCQ2w<span style="color:#f92672">=</span>
+gopkg.in/labstack/echo.v1 v1.4.4/go.mod h1:Om7rDkDgmunv8fIK0aJk20dpMc/wL3gduK2/MA77j9M<span style="color:#f92672">=</span>
+
+</code></pre></div><p>2, 依存ライブラリのダウンロード.<br>
+<code>$GOPATH/src/mod</code>配下に、依存ライブラリがダウンロードされた.ダウンロードされたファイルは全て読み取り専用ファイルだった.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ tree -L <span style="color:#ae81ff">3</span> $GOPATH/src/mod
+/$GOPATH/src/mod
+├── cache
+│   ├── download
+│   │   ├── github.com
+│   │   ├── golang.org
+│   │   └── gopkg.in
+│   └── vcs
+│       ├── 0dab07b2bc76e1a16f634a5820d4273df978197197563ecdd7de44174100fdff
+│       ├── 0dab07b2bc76e1a16f634a5820d4273df978197197563ecdd7de44174100fdff.info
+│       ├── 13abe9aa4277b39be515dfbd2c238cd85cb821e0f839d89b85f0550029fd014c
+│       ├── 13abe9aa4277b39be515dfbd2c238cd85cb821e0f839d89b85f0550029fd014c.info
+│       ├── 30c9ff783c569486f16dd17edc1d5452d3cb911f2bf5cbd3ad3a9cd40cac2cc9
+│       ├── 30c9ff783c569486f16dd17edc1d5452d3cb911f2bf5cbd3ad3a9cd40cac2cc9.info
+│       ├── 4a22365141bc4eea5d5ac4a1395e653f2669485db75ef119e7bbec8e19b12a21
+│       ├── 4a22365141bc4eea5d5ac4a1395e653f2669485db75ef119e7bbec8e19b12a21.info
+│       ├── 7028097e3b6cce3023c34b7ceae3657ef3f2bbb25dec9b4362813d1fadd80297
+│       ├── 7028097e3b6cce3023c34b7ceae3657ef3f2bbb25dec9b4362813d1fadd80297.info
+│       ├── 81422602c8b2420147f0b1035e7fbd13b7e346a0fa3789a04112c4987ab7cd1a
+│       ├── 81422602c8b2420147f0b1035e7fbd13b7e346a0fa3789a04112c4987ab7cd1a.info
+│       ├── e031cefd20551fa656143db80048e31ec1392e078fe6d468f774bdf7eec417c5
+│       ├── e031cefd20551fa656143db80048e31ec1392e078fe6d468f774bdf7eec417c5.info
+│       ├── f7e99db597f4d2fe3e4509a9af308dace72a13292b505deb909cd0df29c1468a
+│       └── f7e99db597f4d2fe3e4509a9af308dace72a13292b505deb909cd0df29c1468a.info
+├── github.com
+│   ├── labstack
+│   │   ├── echo@v1.4.4
+│   │   └── gommon@v0.2.1
+│   ├── mattn
+│   │   ├── go-colorable@v0.0.9
+│   │   └── go-isatty@v0.0.3
+│   └── valyala
+│       ├── bytebufferpool@v0.0.0-20160817181652-e746df99fe4a
+│       └── fasttemplate@v0.0.0-20170224212429-dcecefd839c4
+├── golang.org
+│   └── x
+│       └── net@v0.0.0-20180712202826-d0887baf81f4
+└── gopkg.in
+    └── labstack
+        └── echo.v1@v1.4.4
+</code></pre></div><h2 id="ビルド失敗の原因">ビルド失敗の原因</h2>
+<p><code>github.com/labstack/echo</code>の最新のリリースは<code>v3</code>系(=3.3.5、2018/07/14付)であるにも関わらず、<code>v1.4.4</code>で依存解決されていたため. v1系のAPIが最新のAPIと互換性がなかったため、ビルドできなかった.</p>
+<ul>
+<li><a href="https://github.com/labstack/echo/releases">Releases・labstack/echo</a></li>
+</ul>
+<h2 id="色々試してみた">色々試してみた</h2>
+<p>直感ベースで色々思いつくことを試した.</p>
+<h2 id="失敗例その１">失敗例その１</h2>
+<p>ソースコードのimportを<code>github.com/labstack/echo</code>から<code>github.com/labstack/echo/v3</code>に書き直した.
+vgoにおいて、もっとも大きな変化の一つであるsemantic import versioningでは、major versionの異なるパッケージは異なるimport pathで表す.
+例えば、<code>github.com/foo/var</code>というパッケージがあったときに、このパッケージの<code>v2</code>系を使うためには<code>github.com/foo/var/v2</code>というimport pathを指定する.
+ということで、その通りに書き直して試した.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># main.go</span>
+
+import <span style="color:#f92672">(</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+
+	<span style="color:#e6db74">&#34;github.com/labstack/echo/v3&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/labstack/echo/middleware/v3&#34;</span>
+<span style="color:#f92672">)</span>
+
+...
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ vgo build ./...
+go: downloading github.com/labstack/echo/v3 v3.2.1
+go: finding github.com/labstack/echo/middleware/v3 latest
+go: finding github.com/labstack/echo/middleware latest
+go: import <span style="color:#e6db74">&#34;github.com/himetani/vgo-echo-sample&#34;</span> -&gt;
+        import <span style="color:#e6db74">&#34;github.com/labstack/echo/middleware/v3&#34;</span>: cannot find module providing package github.com/labstack/echo/middleware/v3
+go: import <span style="color:#e6db74">&#34;github.com/himetani/vgo-echo-sample&#34;</span> -&gt;
+        import <span style="color:#e6db74">&#34;github.com/labstack/echo/v3&#34;</span>: cannot find module providing package github.com/labstack/echo/v3
+</code></pre></div><p>ビルドは失敗した.</p>
+<p><code>github.com/labstack/echo</code>は、まだgo modulesに対応してなかったので、モジュールを解決できなかったぽい.
+面白いなと思ったのが、<br>
+<code>go: downloading github.com/labstack/echo/v3 v3.2.1</code><br>
+の部分.<br>
+go modulesに対応していないというエラーが出ているものの、<code>v3.2.1</code>というバージョンが<code>v3</code>系の最新のバージョンだということは認識できてるぽい.</p>
+<h3 id="失敗例２">失敗例２</h3>
+<p>ソースコードのimportを<code>github.com/labstack/echo</code>から<code>gopkg.in/labstack/echo.v3</code>に書き直した.</p>
+<p><a href="http://labix.org/gopkg.in">gopkg.in - Stable APIs for the Go language</a>は、Russ Cox先生の一連の<code>vgo</code>の記事の中でも紹介されているサービスで、同じパッケージの異なるバージョンに対して、異なるURLを提供し、それぞれそのパッケージの異なるGitのコミットのURLにリダイレクトする.</p>
+<ul>
+<li><a href="https://research.swtch.com/vgo-intro">Go += Package Versioning (Go &amp; Versioning, Part 1)</a></li>
+</ul>
+<p>例えば、import pathに<code>gopkg.in/yaml.v1</code>を指定すると、<code>yaml</code>パッケージの<code>v1</code>系へのGitのコミットにリダイレクトされ、<code>gopkg.in/yaml.v2</code>を指定すると<code>v2</code>系にリダイレクトされる.
+<code>github.com/labstack/echo</code>と書くと<code>v1</code>系で依存解決されてしまう、かつ、まだgo modules対応がされておらず<code>github.com/labstack/echo/v3</code>は使えないので、import pathを<code>gopkg.in/labstack/echo.v3</code>に書き直すということを試した.</p>
+<p>サンプルコードを修正し、<code>go.mod</code>、<code>go.sum</code>を削除して、もう一度ビルドした.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+
+	<span style="color:#e6db74">&#34;gopkg.in/labstack/echo.v3&#34;</span>
+	<span style="color:#e6db74">&#34;gopkg.in/labstack/echo.v3/middleware&#34;</span>
+)
+
+<span style="color:#f92672">...</span>
+
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ rm go.mod go.sum
+$ touch go.mod
+$ vgo build ./...
+go: finding gopkg.in/labstack/echo.v3 v3.2.1
+go: downloading gopkg.in/labstack/echo.v3 v3.2.1
+go: finding github.com/labstack/gommon/bytes latest
+go: finding github.com/dgrijalva/jwt-go v1.0.2
+go: downloading github.com/dgrijalva/jwt-go v1.0.2
+go: finding github.com/valyala/fasttemplate latest
+go: finding github.com/labstack/gommon/color latest
+go: finding github.com/labstack/gommon/random latest
+go: finding golang.org/x/crypto/acme/autocert latest
+go: finding golang.org/x/crypto/acme latest
+go: finding golang.org/x/crypto latest
+go: downloading golang.org/x/crypto v0.0.0-20180621125126-a49355c7e3f8
+go: finding github.com/labstack/gommon/log latest
+go: finding github.com/valyala/bytebufferpool latest
+go: finding golang.org/x/net/context latest
+go: finding golang.org/x/net latest
+go: finding golang.org/x/net/websocket latest
+<span style="color:#75715e"># gopkg.in/labstack/echo.v3/middleware</span>
+../../../mod/gopkg.in/labstack/echo.v3@v3.2.1/middleware/jwt.go:34:10: undefined: jwt.Claims
+</code></pre></div><p>ビルドは失敗した.</p>
+<p>失敗した原因は、<code>gopkg.in/labstack/echo.v3/middleware</code>が依存する<code>github.com/dgrijalva/jwt-go</code>の最新のリリースは<code>v3</code>系(=3.2.0, 2018/07/14付)であるにも関わらず、<code>v1.0.2</code>で依存解決されていたため.
+v1系のAPIが最新のAPIと互換性がなかったため、ビルドできなかった.</p>
+<ul>
+<li><a href="https://github.com/dgrijalva/jwt-go/releases">Releases・dgrijalva/jwt-go</a></li>
+</ul>
+<p>projectが依存するパッケージが依存するパッケージ(= indirect)をimportするときのURLを<code>gopkg.in</code>を使うように書き直すことはできないので、自分がビルドするプロジェクトのimport pathを書き直す方法だけではビルドは通せないとわかった.</p>
+<h3 id="失敗例３">失敗例３</h3>
+<p>失敗例２の状態で、<code>go.mod</code>の<code>replace</code>ディレクティブを使って、<code>github.com/...</code>で<code>v1</code>系で依存解決されているものを<code>gopkg.in</code>を使うように色々書き直した.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">module github.com/himetani/vgo-echo-sample
+
+require <span style="color:#f92672">(</span>
+	github.com/dgrijalva/jwt-go v1.0.2 // indirect
+	github.com/labstack/echo v1.4.4
+	github.com/labstack/gommon v0.2.1 // indirect
+	github.com/mattn/go-colorable v0.0.9 // indirect
+	github.com/mattn/go-isatty v0.0.3 // indirect
+	github.com/valyala/bytebufferpool v0.0.0-20160817181652-e746df99fe4a // indirect
+	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
+	golang.org/x/crypto v0.0.0-20180621125126-a49355c7e3f8 // indirect
+	golang.org/x/net v0.0.0-20180712202826-d0887baf81f4 // indirect
+	gopkg.in/labstack/echo.v1 v1.4.4 // indirect
+	gopkg.in/labstack/echo.v3 v3.2.1
+<span style="color:#f92672">)</span>
+
+replace <span style="color:#f92672">(</span>
+	github.com/dgrijalva/jwt-go v1.0.2 <span style="color:#f92672">=</span>&gt; gopkg.in/dgrijalva/jwt-go.v3 v3.2.0
+	github.com/labstack/echo v1.4.4 <span style="color:#f92672">=</span>&gt; gopkg.in/labstack/echo.v3 v3.2.1
+<span style="color:#f92672">)</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ vgo build 
+<span style="color:#75715e"># github.com/himetani/vgo-echo-sample</span>
+./main.go:12:25: cannot use middleware.Logger<span style="color:#f92672">()</span> <span style="color:#f92672">(</span>type <span style="color:#e6db74">&#34;github.com/labstack/echo&#34;</span>.MiddlewareFunc<span style="color:#f92672">)</span> as type <span style="color:#e6db74">&#34;gopkg.in/labstack/echo.v3&#34;</span>.MiddlewareFunc in argument to e.Use
+</code></pre></div><p>依存解決はうまくいったようだが、ビルドができなかった。。。試しに<code>go build</code>してみたが、これでもビルドできなかったので、<code>vgo</code>うんぬんの話ではなくそもそも<code>gopkg.in</code>を使うとimport pathを解決できずに上手くビルドできないという問題がある.</p>
+<h2 id="成功例">成功例</h2>
+<p><code>vgo get</code>コマンドを使って、<code>go.mod</code>の<code>github.com/labstack/echo</code>の依存するバージョンを<code>v3</code>系にあげた. <code>vgo get</code>を使うと、依存するモジュールのバージョンを変更することができた.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ rm go.mod go.sum
+$ touch go.mod
+$ vgo build ./...                                                                                                                
+go: finding github.com/labstack/echo/middleware latest
+go: finding github.com/labstack/gommon/color latest
+go: downloading gopkg.in/labstack/echo.v1 v1.4.4
+go: finding golang.org/x/net/context latest
+go: finding golang.org/x/net latest
+go: finding golang.org/x/net/websocket latest
+go: finding github.com/labstack/gommon/log latest
+go: finding github.com/valyala/fasttemplate latest
+go: finding github.com/valyala/bytebufferpool latest
+<span style="color:#75715e"># github.com/himetani/vgo-echo-sample</span>
+./main.go:14:3: e.GET undefined <span style="color:#f92672">(</span>type *<span style="color:#e6db74">&#34;github.com/labstack/echo&#34;</span>.Echo has no field or method GET, but does have Get<span style="color:#f92672">)</span>
+./main.go:16:10: e.Logger.Fatal undefined <span style="color:#f92672">(</span>type func<span style="color:#f92672">()</span> *<span style="color:#e6db74">&#34;github.com/labstack/gommon/log&#34;</span>.Logger has no field or method Fatal<span style="color:#f92672">)</span>
+./main.go:16:18: e.Start undefined <span style="color:#f92672">(</span>type *<span style="color:#e6db74">&#34;github.com/labstack/echo&#34;</span>.Echo has no field or method Start<span style="color:#f92672">)</span>
+
+$ vgo get github.com/labstack/echo@v3.3.5
+go: finding github.com/labstack/echo v3.3.5
+go get github.com/labstack/echo@v3.3.5: unknown revision v3.3.5
+</code></pre></div><p><code>v3.3.5</code>はダウンロードできないようなので、さっきダウンロードできてた<code>v3.2.1</code>で試した.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">vgo get github.com/labstack/echo@v3.2.1                                                                                        
+go: finding github.com/labstack/echo v3.2.1
+go: downloading github.com/labstack/echo v0.0.0-20170621150743-935a60782cbb
+go: finding golang.org/x/crypto/acme/autocert latest
+go: finding golang.org/x/crypto/acme latest
+go: finding golang.org/x/crypto latest
+</code></pre></div><p><code>go.mod</code>を確認すると<code>github.com/labstack/echo</code>が更新されていた.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># go.mod</span>
+
+require <span style="color:#f92672">(</span>
+        github.com/labstack/echo v0.0.0-20170621150743-935a60782cbb
+		... 
+<span style="color:#f92672">)</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ vgo build ./...
+go: finding github.com/labstack/echo v0.0.0-20170621150743-935a60782cbb
+<span style="color:#75715e"># github.com/labstack/echo/middleware</span>
+../../../mod/github.com/labstack/echo@v0.0.0-20170621150743-935a60782cbb/middleware/jwt.go:34:10: undefined: jwt.Claims
+</code></pre></div><p><code>github.com/dgrijalva/jwt-go</code>もバージョンをあげる.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ vgo get github.com/dgrijalva/jwt-go@v3.2.0                                                                                     
+go: finding github.com/dgrijalva/jwt-go v3.2.0
+go: downloading github.com/dgrijalva/jwt-go v0.0.0-20180308231308-06ea1031745c
+</code></pre></div><p><code>go.mod</code>を確認すると<code>github.com/dgrijalva/jwt-go</code>が更新されていた.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># go.mod </span>
+
+require <span style="color:#f92672">(</span>
+        github.com/dgrijalva/jwt-go v0.0.0-20180308231308-06ea1031745c // indirect
+		...
+<span style="color:#f92672">)</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ vgo build ./...                                                                                                                
+go: finding github.com/dgrijalva/jwt-go v0.0.0-20180308231308-06ea1031745c
+$ ls                                                                                                                             
+go.mod          go.sum          main.go         vgo-echo-sample
+</code></pre></div><p>これでようやくビルドが成功した.</p>
+<h2 id="気になって調べたこと">気になって調べたこと</h2>
+<ul>
+<li>なぜ<code>vgo</code>コマンドで<code>v3.3.5</code>が依存解決できなかったのか？<br>
+=&gt; <code>vgo</code>は<code>v</code>のprefixがついたタグのみ認識するため.
+実は<code>github.com/labstack/echo</code>では、<code>v</code>がついているのが<code>v3.2.1</code>までで、それ以降のバージョンにはついていない.</li>
+<li><code>go.mod</code>に書かれているバージョンが<code>v0.0.0-20180308231308-06ea1031745c</code>となっているがこれは何か？<br>
+=&gt; pseudo-versionと言われるもので、コミットが直接指定されている. pseudo-versionで指定されているコミットは、<code>v0.0.1</code>より小さいバージョンだとみなされる.</li>
+</ul>
+<h2 id="まとめ">まとめ</h2>
+<ul>
+<li><code>vgo</code>では、<code>v0</code>、<code>v1</code>のバージョンは<code>github.com/foo/bar</code>、<code>v2</code>系以降のバージョンは<code>github.com/foo/bar/v2</code>のようにモジュールの依存を指定する.</li>
+<li>go modulesに対応していないパッケージの<code>v2</code>系以降のバージョンを使うには<code>vgo get github.com/foo/bar@tag</code>とすることで<code>github.com/foo/bar</code>のままで利用できる. ただし、そのバージョンはpseudo-versionとなる.</li>
+<li>pseudo-versionは、例えそれが<code>v2</code>系以降を示すバージョンであったとしても、go modulesの中では<code>v2</code>系以降のバージョンとは認識されない. 特定のcommitが直接指定されて依存解決される.</li>
+<li>利用するパッケージがgo modulesに対応しておらず、<code>v2</code>系以降のバージョンを使いたい、もしくは利用するパッケージが依存するパッケージの依存の中にgo modulesに対応していないかつ<code>v2</code>系以降のバージョンの依存が含まれる場合、<code>vgo get</code>でいちいちpsuedo versionを指定しないとbuildできないので、めんどくさそう. (depやglideのプロジェクトを移行する場合は<code>vgo</code>がいい感じにやってくれるみたいなので、面倒くさいのは新規のプロジェクト)</li>
+</ul></section>
+
+  
+  
+  <footer class="post-tags">
+     
+    <a href="https://himetani.github.io/tags/golang">golang</a>
+    
+  </footer>
+  
+
+  
+  
+  
+  <nav class="post-nav">
+    
+    <a class="prev" href="https://himetani.github.io/posts/the_site_reliablity_workbook_chapter12/"><span>←</span><span>The Site Reliability Workbookの12章を読んだ</span></a>
+     
+    <a class="next" href="https://himetani.github.io/posts/go-http-server-overview/"><span>Goのhttp serverの雰囲気を理解する</span><span>→</span></a>
+    
+  </nav>
+  
+
+  
+  
+  <div id="disqus_thread" class="post-comments"></div>
+  <script>
+    var disqusShortname = 'himetani';
+    var script = document.createElement('script');
+    script.src = 'https://' + disqusShortname + '.disqus.com/embed.js';
+    script.setAttribute('data-timestamp', +new Date());
+    document.head.appendChild(script);
+  </script>
+  
+</article>
+
+</main>
+
+    <footer class="footer">
+  <p>&copy; 2021 <a href="https://himetani.github.io">himetani&#39;s cafe</a></p>
+  <p>Powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>️</p>
+  <p>
+    <a href="https://github.com/nanxiaobei/hugo-paper" rel="noopener" target="_blank">Paper 5.1</a>
+  </p>
+</footer>
+
+  </body>
+</html>

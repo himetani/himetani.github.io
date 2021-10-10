@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on himetani&#39;s cafe</title>
+    <link>https://himetani.github.io/posts/</link>
+    <description>Recent content in Posts on himetani&#39;s cafe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    <lastBuildDate>Sun, 05 Aug 2018 18:03:09 +0900</lastBuildDate><atom:link href="https://himetani.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない</title>
+      <link>https://himetani.github.io/posts/can_not_catch_sigkill_and_sigstop/</link>
+      <pubDate>Sun, 05 Aug 2018 18:03:09 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/can_not_catch_sigkill_and_sigstop/</guid>
+      <description>&lt;p&gt;GolangでSIGKILLやSITGTOPをcatchしようとしてしまったときのことを書いた.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>The Site Reliability Workbookの12章を読んだ</title>
+      <link>https://himetani.github.io/posts/the_site_reliablity_workbook_chapter12/</link>
+      <pubDate>Sat, 28 Jul 2018 16:39:52 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/the_site_reliablity_workbook_chapter12/</guid>
+      <description>&lt;p&gt;The Site Reliability Workbookの12章を読んだので、自分の理解の要約をする&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする</title>
+      <link>https://himetani.github.io/posts/vgo-echo-sample/</link>
+      <pubDate>Sat, 14 Jul 2018 19:47:30 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/vgo-echo-sample/</guid>
+      <description>&lt;h1 id=&#34;go-modulesvgoでecho依存のプロジェクトをビルドする&#34;&gt;go modules(vgo)でecho依存のプロジェクトをビルドする&lt;/h1&gt;
+&lt;p&gt;go modules(&lt;code&gt;vgo&lt;/code&gt;)で&lt;code&gt;labstack/echo&lt;/code&gt;を使ったプロジェクトをビルドするときにやったことを書いた。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Goのhttp serverの雰囲気を理解する</title>
+      <link>https://himetani.github.io/posts/go-http-server-overview/</link>
+      <pubDate>Mon, 30 Apr 2018 00:21:25 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/go-http-server-overview/</guid>
+      <description>&lt;h1 id=&#34;goのhttp-serverの雰囲気を理解する&#34;&gt;Goのhttp serverの雰囲気を理解する&lt;/h1&gt;
+&lt;p&gt;Goのhttpサーバの雰囲気を理解するための記事を書いた。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>for文の中でmethodをgoroutine化する</title>
+      <link>https://himetani.github.io/posts/for-goroutine/</link>
+      <pubDate>Fri, 30 Mar 2018 22:41:19 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/for-goroutine/</guid>
+      <description>&lt;h1 id=&#34;for文の中でmethodをgoroutine化する&#34;&gt;for文の中でmethodをgoroutine化する&lt;/h1&gt;
+&lt;p&gt;こんなコードを書くと、予期しない結果となる。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>非rootユーザでSpring Bootアプリをサービスとして起動させる</title>
+      <link>https://himetani.github.io/posts/spring-boot-non-root/</link>
+      <pubDate>Sun, 11 Jun 2017 21:26:03 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/spring-boot-non-root/</guid>
+      <description>&lt;p&gt;非rootユーザでSpring Bootアプリをサービスとして起動させるためにやったことを書きました。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Vimでsimplenoteを編集する</title>
+      <link>https://himetani.github.io/posts/edit_simplenote_with_vim/</link>
+      <pubDate>Tue, 16 Feb 2016 21:10:22 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/edit_simplenote_with_vim/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://simplenote.com&#34;&gt;simplenote&lt;/a&gt;というサービスをVimから使うための設定について書きました。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

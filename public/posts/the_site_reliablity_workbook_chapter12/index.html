@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html lang="ja">
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  
+  <title>The Site Reliability Workbookの12章を読んだ - himetani&#39;s cafe</title>
+
+  
+  
+  <meta name="description" content="The Site Reliability Workbookの12章を読んだので、自分の理解の要約をする" />
+  <meta name="author" content="" />
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/app.min.css" />
+
+  
+  <link rel="preload stylesheet" as="style" href="https://himetani.github.io/an-old-hope.min.css" />
+  <script
+    defer
+    src="https://himetani.github.io/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad();"
+  ></script>
+  
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/theme.png" />
+
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/twitter.svg" />
+  
+  <link rel="preload" as="image" href="https://himetani.github.io/github.svg" />
+  
+
+  
+  <link rel="icon" href="https://himetani.github.io/favicon.ico" />
+  <link rel="apple-touch-icon" href="https://himetani.github.io/apple-touch-icon.png" />
+
+  
+  <meta name="generator" content="Hugo 0.88.1" />
+
+  
+  
+
+  
+  
+  
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-118965980-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  
+  
+  
+  <meta property="og:title" content="The Site Reliability Workbookの12章を読んだ" />
+<meta property="og:description" content="The Site Reliability Workbookの12章を読んだので、自分の理解の要約をする" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://himetani.github.io/posts/the_site_reliablity_workbook_chapter12/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-07-28T16:39:52+09:00" />
+<meta property="article:modified_time" content="2018-07-28T16:39:52+09:00" />
+
+
+  
+  <meta itemprop="name" content="The Site Reliability Workbookの12章を読んだ">
+<meta itemprop="description" content="The Site Reliability Workbookの12章を読んだので、自分の理解の要約をする"><meta itemprop="datePublished" content="2018-07-28T16:39:52+09:00" />
+<meta itemprop="dateModified" content="2018-07-28T16:39:52+09:00" />
+<meta itemprop="wordCount" content="2340">
+<meta itemprop="keywords" content="sre," />
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="The Site Reliability Workbookの12章を読んだ"/>
+<meta name="twitter:description" content="The Site Reliability Workbookの12章を読んだので、自分の理解の要約をする"/>
+
+  
+  
+</head>
+
+
+  <body class="not-ready" data-menu="false">
+    <header class="header">
+  
+  <p class="logo">
+    <a class="site-name" href="https://himetani.github.io">himetani&#39;s cafe</a><a class="btn-dark"></a>
+  </p>
+  
+
+  <script>
+    let bodyClx = document.body.classList;
+    let btnDark = document.querySelector('.btn-dark');
+    let sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+    let darkVal = localStorage.getItem('dark');
+
+    let setDark = (isDark) => {
+      bodyClx[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark ? 'yes' : 'no');
+    };
+
+    setDark(darkVal ? darkVal === 'yes' : sysDark.matches);
+    requestAnimationFrame(() => bodyClx.remove('not-ready'));
+
+    btnDark.addEventListener('click', () => setDark(!bodyClx.contains('dark')));
+    sysDark.addEventListener('change', (event) => setDark(event.matches));
+  </script>
+
+  
+  
+
+  
+  <nav class="social">
+    
+    <a
+      class="twitter"
+      style="--url: url(./twitter.svg)"
+      href="https://twitter.com/himetani_cafe"
+      target="_blank"
+    ></a>
+    
+    <a
+      class="github"
+      style="--url: url(./github.svg)"
+      href="https://github.com/himetani"
+      target="_blank"
+    ></a>
+    
+  </nav>
+  
+</header>
+
+
+    <main class="main">
+
+<article class="post-single">
+  <header class="post-title">
+    <p>
+      <time>Jul 28, 2018</time>
+      
+    </p>
+    <h1>The Site Reliability Workbookの12章を読んだ</h1>
+  </header>
+  <section class="post-content"><p>The Site Reliability Workbookの12章を読んだので、自分の理解の要約をする</p>
+<h1 id="この章のテーマ">この章のテーマ</h1>
+<ul>
+<li>Googleでは、プロダクションで動くシステムにおいてreliabilityを最も問題だと考えている</li>
+<li>reliablityを考慮した上で行うiterativeな設計や実装をNALSD(Non-Abstract Large System Design)と呼ぶ</li>
+<li>NALSDによって、ロバストでスケールするシステムをより小さなオペレーションコストで構築できる</li>
+<li>NALSDの考え方や実践例を紹介している.</li>
+</ul>
+<h1 id="nalsdとは">NALSDとは</h1>
+<ul>
+<li>High Availabilityの求められる巨大なシステムに作るときに、要件を理解、設計、評価するときにSREが持つべきスキル.</li>
+<li>キャパシティプランニング、Isolation、graceful degradationなど、さまざまな観点で複合的に考える必要がある.</li>
+<li>日々変化するシステムの要件に対して、設計の鍵となる部分を正しく分析・評価できることが重要だと考えられている.</li>
+<li>iterativeなプラクティス</li>
+</ul>
+<p>起こり得るfailure modeに対する防御と要件を満たす、巨大なシステムを構築するには、Reliablityの観点でさまざまなことを考える必要がある.
+それらのSREが行うべき仕事や、その過程を体系化している.</p>
+<p>重要なのは、&ldquo;Non-Abstract&quot;の部分だ.
+SREに求められるのは、論理的に正しいシステムをデザインすることではなく、実際にリアルなデータセンターでリアルなネットワークの中で動き続けるシステムをデザインすることだ.
+これらの要求に対して、仮説と評価を繰り返すことで、完璧ではなくとも現実世界で実現可能な巨大なシステムをデザインする.</p>
+<h1 id="google-adwordsでの例">Google AdWordsでの例</h1>
+<p>Google AddwordsでのCTRのレポートシステムの例が示されていた.</p>
+<p>NALSDの考え方によれば、システムがどのように育つことを期待するかを考慮した上で,システムをいくつかの論理的なコンポーネントに分割する.
+適切に分割できると、個々の問題をそれぞれ一つのハードウェア、または一つのソフトウェアインスタンスの問題にブレイクダウンできるため、よりスケールしやすく、よりresiliantなシステムにできる.
+このようなデザインプロセスをiterativeなプロセスで行う.
+各プロセスでは、フェーズに応じて4つの問いを念頭に置く.</p>
+<h2 id="basic-design">Basic Design</h2>
+<ol>
+<li>Is it possible?<br>
+そもそもRAM、CPU、ネットワークバンド幅は要件を満たすために十分か？</li>
+<li>Can we do better?<br>
+例えば、<em>O</em>(<em>n</em>)時間で解ける問題を<em>O</em>(<em>logn</em>)で解けないか?</li>
+</ol>
+<h2 id="scale-up-phase">Scale up Phase</h2>
+<ol start="3">
+<li>Is it feasible?<br>
+ハードウェアや金銭面などの制約下で、スケール可能か？分散システムは要件を満たすか?</li>
+<li>Is it resilient?<br>
+コンポーネントの一部、またはデータセンターがフェイルした場合にどうなるか?</li>
+</ol>
+<h1 id="実際のステップ">実際のステップ</h1>
+<h2 id="要件決め">要件決め</h2>
+<p>システムに求められる要件を元に、SLOを決める.</p>
+<h2 id="1台のマシンで動かすと">1台のマシンで動かすと?</h2>
+<p>まずはじめに、シンプルに考えるために1台のマシンで全体のアプリケーションを動かすことを考える.
+具体的に、扱うデータの量は？クエリの頻度はどれくらいか？どのような傾向があるか？など仮説を立てる.
+それらの仮説を元に、必要なRAMやディスクなどを定量的に概算し、それらがSLOを満たすか評価する.
+また、概算値とは別に、もしコンポーネントがfailした場合にどうなるか？ということもSLOと照らし合わせながら評価する.</p>
+<p>ここまで評価した上で、1台のマシンでアプリケーションを動かす場合に実現不可能だと結論づける.
+これらのプロセスは一見無駄なものに思えるが、この結論に至るまでに手に入れた判断材料は、要件を正しく理解するのに役立つ.</p>
+<h2 id="分散システムのアーキテクチャを考える">分散システムのアーキテクチャを考える</h2>
+<p>ここではMapReduceとLogJoinerというアーキテクチャが検討されていた.
+このステップまでに、システムに求められる要件、SLO、ハードウェアやパフォーマンスの制約が明確になっているため、それらを元に評価する.
+ここではLogJoinerが採用されさらにSharded LogJoinerが考えられていた.
+このアーキテクチャについて、データの整合性や効率、一部のコンポーネントがフェイルした場合でも、SLOを満たすことができるか、などをより具体的な数値を元に議論する.
+分散合意アルゴリズムを採用する場合のlatetncyや一部のデータセンターがある地域で災害が起きた場合に備えて、デザインしたシステムをマルチデータセンターで運用した場合についても、概算値を元に仮説を立て、SLOと照らし合わせながら設計を評価する.</p>
+<h2 id="最後に">最後に</h2>
+<p>要件を満たし、スケールし、パフォーマンスやReliablityについても問題ないシステムをデザインできた. めでたしめでたしとなるらしい.</p>
+<h1 id="所感">所感</h1>
+<p>自分が感じたことは以下の2点だ.</p>
+<ol>
+<li>たとえ明らかに分散システムが必要であるような規模のシステムに対しも、シンプルなシステムから考え始めることが重要</li>
+<li>経験や暗黙知がベースとなりがちな巨大なシステムのデザイン過程を体系化して説明していてえらい（ありがたい）</li>
+</ol>
+<p>最終的にどういう設計にしたかではなく、その設計に至った理由やどういう仮説を立てたかが重要であると書いてあった.
+仮説や設計判断の理由を明確にするために、シンプルな設計から始め、なぜシンプルな設計ではダメなのかを説明した上でより複雑な構成を考える、というステップがとても合理的だと感じた.</p>
+<p>また、巨大で複雑なhigh availabilityの求められるシステムは、特に暗黙知や経験によってデザインや運用されることが多いと思う.<br>
+NALSDという枠組みを用いて、考えるべきことやその設計の過程を体系化していてすごくえらいしありがたいと思った.</p></section>
+
+  
+  
+  <footer class="post-tags">
+     
+    <a href="https://himetani.github.io/tags/sre">sre</a>
+    
+  </footer>
+  
+
+  
+  
+  
+  <nav class="post-nav">
+    
+    <a class="prev" href="https://himetani.github.io/posts/can_not_catch_sigkill_and_sigstop/"><span>←</span><span>SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない</span></a>
+     
+    <a class="next" href="https://himetani.github.io/posts/vgo-echo-sample/"><span>go modules(vgo)でlabstack/echo依存のプロジェクトをビルドする</span><span>→</span></a>
+    
+  </nav>
+  
+
+  
+  
+  <div id="disqus_thread" class="post-comments"></div>
+  <script>
+    var disqusShortname = 'himetani';
+    var script = document.createElement('script');
+    script.src = 'https://' + disqusShortname + '.disqus.com/embed.js';
+    script.setAttribute('data-timestamp', +new Date());
+    document.head.appendChild(script);
+  </script>
+  
+</article>
+
+</main>
+
+    <footer class="footer">
+  <p>&copy; 2021 <a href="https://himetani.github.io">himetani&#39;s cafe</a></p>
+  <p>Powered by <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>️</p>
+  <p>
+    <a href="https://github.com/nanxiaobei/hugo-paper" rel="noopener" target="_blank">Paper 5.1</a>
+  </p>
+</footer>
+
+  </body>
+</html>

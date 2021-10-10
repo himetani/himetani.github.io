@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>http on himetani&#39;s cafe</title>
+    <link>https://himetani.github.io/tags/http/</link>
+    <description>Recent content in http on himetani&#39;s cafe</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    <lastBuildDate>Mon, 30 Apr 2018 00:21:25 +0900</lastBuildDate><atom:link href="https://himetani.github.io/tags/http/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Goのhttp serverの雰囲気を理解する</title>
+      <link>https://himetani.github.io/posts/go-http-server-overview/</link>
+      <pubDate>Mon, 30 Apr 2018 00:21:25 +0900</pubDate>
+      
+      <guid>https://himetani.github.io/posts/go-http-server-overview/</guid>
+      <description>&lt;h1 id=&#34;goのhttp-serverの雰囲気を理解する&#34;&gt;Goのhttp serverの雰囲気を理解する&lt;/h1&gt;
+&lt;p&gt;Goのhttpサーバの雰囲気を理解するための記事を書いた。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

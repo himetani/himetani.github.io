@@ -1,0 +1,12 @@
+baseurl = "https://himetani.github.io"
+languageCode = "ja"
+title = "himetani's cafe"
+theme = "paper"
+hasCJKLanguage = true
+googleAnalytics = "UA-118965980-1"
+enableEmoji = true
+disqusShortname = "himetani"
+
+[params]
+	twitter = "himetani_cafe"
+	github = "himetani"
