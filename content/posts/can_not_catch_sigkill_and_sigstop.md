@@ -1,5 +1,5 @@
 +++
-title = "SIGKILL、SIGSTOPはcatchできない. Golangでcatchしようとするコードを書いても、コンパイルエラーにもランタイムエラーにもならない"
+title = "GolangでSIGKILL、SIGSTOPはcatchできない"
 date = 2018-08-05T18:03:09+09:00
 draft  = false
 tags = ["golang"]
@@ -10,7 +10,8 @@ GolangでSIGKILLやSITGTOPをcatchしようとしてしまったときのこと�
 <!--more-->
 
 # やらかしたこと　
-Goで常駐プロセスを動かすときに、SIGNALをトラップしてgracefulにプロセスを止めることができるように以下のようなプログラムを書くことがあった.  
+
+Goで常駐プロセスを動かすときに、SIGNALをトラップしてgracefulにプロセスを止めることができるように以下のようなプログラムを書くことがあった.
 
 ```go
 package main
@@ -53,22 +54,22 @@ func doSomething(ctx context.Context) {
 ```
 
 このプログラムを停止するには、このプロセスにSIGINTシグナルを送ればよい.  
-SIGKILLやSIGSTOPをでもgracefulに停止できるようにしようと思って以下のように変えてみたが、これは間違いだ.
+SIGKILLやSIGSTOPでもgracefulに停止できるようにしようと思って以下のように変えてみたが、これは間違いだ.
 コンパイルエラーもランタイムエラーも起きないが、シグナルをcatchすることはできない.
 
-``` go
+```go
 signal.Notify(c, syscall.SIGINT, syscall.SIGKILL, syscall.SIGSTOP)
 ```
 
 ## SIGKILL, SIGSTOPはcatchできない
-そもそもSIGKILLとSITSTOPは、catchできないシグナルだった...   
-[Signal (IPC)](https://en.wikipedia.org/wiki/Signal_(IPC)#SIGKILL)
+
+そもそもSIGKILLとSITSTOPは、catchできないシグナルだった...  
+[Signal (IPC)](<https://en.wikipedia.org/wiki/Signal_(IPC)#SIGKILL>)
 
 Goのオフィシャルドキュメントにも明記してある.  
 `The signals SIGKILL and SIGSTOP may not be caught by a program, and therefore cannot be affected by this package.`
 
 [Package signal](https://golang.org/pkg/os/signal/)
-
 
 上記のようなコードはコンパイルエラーにするべきだ、というissueが上がっていましたが、見送られたようです.  
 [os/signal: Prevent developers from catching SIGKILL and SIGSTOP](https://github.com/golang/go/issues/9463)
