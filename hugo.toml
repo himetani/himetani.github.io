@@ -1,0 +1,54 @@
+baseurl = "https://himetani.github.io"
+languageCode = "ja"
+title = "himetani's cafe"
+hasCJKLanguage = true
+enableEmoji = true
+disqusShortname = "himetani"
+copyright = "Takafumi Tsukamoto"
+publishDir = "docs"
+
+[module]
+  [[module.imports]]
+    path = "github.com/michenriksen/hugo-theme-til"
+[outputs]
+  home = ['html']
+  section = ['html', 'rss', 'json']
+  page = ['html']
+
+[menus]
+  [[menus.main]]
+    name = 'Notes'
+    pageRef = '/notes'
+    weight = 20
+  [[menus.main]]
+    name = 'Posts'
+    pageRef = '/posts'
+    weight = 30
+  [[menus.main]]
+    name = 'Graph'
+    pageRef = '/graph'
+    weight = 40
+
+[markup]
+  [markup.highlight]
+    style = 'tokyonight-moon'
+
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+    [markup.goldmark.parser]
+      [markup.goldmark.parser.attribute]
+        block = true
+
+[params]
+  dateFormat = ':date_long'
+  showGraph = true
+
+  [params.author]
+    name = 'Takafumi Tsukamoto'
+
+  [params.home]
+    recentPostsLimit = 5
+
+    twitter = "himetani_cafe"
+    github = "himetani"
