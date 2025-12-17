@@ -45,7 +45,7 @@
 
   
     
-    <link rel="stylesheet" href="/css/custom.min.15608ccdbbc5a50c4d62250e26c4a1ab8f9f038d009b4e35262d80fc21eca47d.css" integrity="sha256-FWCMzbvFpQxNYiUOJsShq4&#43;fA40Am041Ji2A/CHspH0=" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.min.6e792c50f2b8fca04cc248af661d98f156c27d5587e9d37349ded8a7b36e7c2b.css" integrity="sha256-bnksUPK4/KBMwkivZh2Y8VbCfVWH6dNzSd7Yp7NufCs=" crossorigin="anonymous">
   
 
 
@@ -160,8 +160,7 @@
 Javaの実行環境を用意さえすれば、簡単にアプリケーションを立ち上げることができます。
 コンソール経由で実行する場合、特別な環境設定は不要です。(IDE経由で動かす場合は、Spring Boot系のプラグインの設定が必要)</p>
 <p>exucatble jarを使ってアプリを起動するには以下のコマンドを使用します。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-01">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-01" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -260,8 +259,7 @@ Javaの実行環境を用意さえすれば、簡単にアプリケーション�
 しかし、Spring Bootではサービスとして起動できるビルド成果物も簡単に作成することができます。
 サービスとして起動できるビルド成果物のことを<strong>fully executable jar</strong>と言います。
 pom.xmlに以下の設定を記述すると、ビルド後にtargetディレクトリ配下にできるjarファイルが<strong>fully executable jar</strong>となります。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-02">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-02" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -333,8 +331,7 @@ pom.xmlに以下の設定を記述すると、ビルド後にtargetディレク�
   
 </figure>
 <p>開発環境ではexecutable jarを、Staging環境やProduction環境ではfully executable jarをビルドしたいときは、Mavenのプロファイル機能を使ってビル成果物を切り替えることができます。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-03">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-03" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -435,8 +432,7 @@ pom.xmlに以下の設定を記述すると、ビルド後にtargetディレク�
   
 </figure>
 <p>ビルドコマンド</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-04">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-04" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -508,8 +504,7 @@ pom.xmlに以下の設定を記述すると、ビルド後にtargetディレク�
   
 </figure>
 <p><strong>fully executable jar</strong>としてビルドされたjarファイルは、一般的なサービススクリプトのようにプロセスを制御することができます。init.dやsystemdに登録することもできます。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-05">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-05" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -608,8 +603,7 @@ pom.xmlに以下の設定を記述すると、ビルド後にtargetディレク�
 </ol>
 <p>権限周りの設定変更がされていない限り、/var/runや/var/logには非rootユーザに書き込み権限はありません。
 そこでpidファイルの出力先とlogファイルの出力先を変更する必要があります。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-06">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-06" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
