@@ -46,7 +46,7 @@
 
   
     
-    <link rel="stylesheet" href="/css/custom.min.15608ccdbbc5a50c4d62250e26c4a1ab8f9f038d009b4e35262d80fc21eca47d.css" integrity="sha256-FWCMzbvFpQxNYiUOJsShq4&#43;fA40Am041Ji2A/CHspH0=" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.min.6e792c50f2b8fca04cc248af661d98f156c27d5587e9d37349ded8a7b36e7c2b.css" integrity="sha256-bnksUPK4/KBMwkivZh2Y8VbCfVWH6dNzSd7Yp7NufCs=" crossorigin="anonymous">
   
 
 
@@ -208,8 +208,7 @@
     </a>
   
 </h2>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-01">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-01" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -304,8 +303,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
   
 </h2>
 <p>ググってみて、以下のようなコードを書くはず。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-02">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-02" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -463,8 +461,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 </h2>
 <p>Goのソースコードから、雰囲気を汲み取ってみる。長ったらしいので、退屈であれば<a href="#anchor">主要な構成要素とHandlerインタフェース</a>まで読み飛ばしてもらってもいいと思う。
 まずは、<code>http.ListenAndServe(&quot;:8080&quot;, nil)</code>の実行後の挙動を追う。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-03">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-03" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -535,8 +532,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 <p><code>Server</code>を初期化して、初期化した<code>Server</code>の<code>ListenAndServe</code>メソッドを呼び出す。<br>
 <code>Server</code>は<code>Handler</code>インタフェースを持つが、これがすごく重要。<br>
 具象型ではなく、インタフェースになっているのがポイント。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-04">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-04" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -622,8 +618,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 <li><code>func (c *conn) serve(ctx context.Context) {}</code>のレシーバは<code>conn</code>のポインタで、<code>conn</code>はメンバとして<code>Server</code>のポインタを保持している</li>
 </ul>
 <p>なぜ<code>Server</code>インスタンスが引き継がれることが重要かというと、<code>Server</code>が持っている<code>Handler</code>が後の処理で使われるため。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-05">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-05" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -688,8 +683,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
   
 </figure>
 <p><code>func (c *conn) serve(ctx context.Context) {}</code>の中のこの処理で、引き継がれた<code>Server</code>が持つ<code>Handler</code>インタフェースを使って、dispatchが始まる。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-06">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-06" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -766,8 +760,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 <code>Handler</code>インタフェースを満たしていればどんな型であってもよいので、以降は<code>Handler</code>の実装により挙動が変わることになる（！）<br>
 ここからは<code>http.ListenAndServe</code>関数の第２引数を<code>nil</code>とした場合に使われるdefaultの<code>DefaultServeMux</code>の挙動を追っていく。
 <code>DefaultServeMux</code>はServeMux型で、もちろんServeMux型はServeHTTPを実装しており、<code>Handler</code>インタフェースを満たす。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-07">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-07" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -844,8 +837,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
   
 </figure>
 <p><code>mux.Handler(r)</code>で、事前に登録していたhandlerとURLのマッピング情報から実際にdispatchするhandlerを取得する。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-08">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-08" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -1088,8 +1080,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
   
 </h3>
 <p>有名なフレームワークに、<a href="https://github.com/labstack/echo">labstack/echo</a>がある。このフレームワークでは、エントリポイントである<code>http.Server</code>をラップした<code>Echo</code>というコンポーネントで全ての処理を置き換えている。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-09">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-09" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
@@ -1178,8 +1169,7 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 </figure>
 <p>TCPサーバとしての<code>Server</code>型のみ利用しており、<code>Server</code>型から<code>http.ServeMux</code>レイヤを呼び出すところのみ<code>Handler</code>インタフェースを使っているが、それ以外のところでは独自のシグネチャを採用している。</p>
 <p>以下は、echoのページにあるサンプル。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-10">
-  <aside
+<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-10" ><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">

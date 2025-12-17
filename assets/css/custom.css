@@ -17,3 +17,15 @@
 .container {
   max-width: 100ch !important; /* Wider than default 65ch, but not full width */
 }
+
+/* Code block with filename styling */
+.codeblock.has-filename .codeblock-filename {
+  /* Ensure filename is visible on small screens too */
+  display: inline-block;
+  z-index: 10;
+}
+
+/* Add padding to prevent overlap between filename and code content */
+.codeblock.has-filename .highlight pre {
+  padding-top: 2.0rem !important;
+}
