@@ -106,6 +106,9 @@ Databricks Asset Bundlesの使用感がわかったところで、ここから�
 - 
 
 # 5. 個人ユーザでなくService Principalを使う
+個人のアカウントを使ってSTG環境やPROD環境にBundleをデプロイすることはリスクになります。
+そんなときはService Principalを使うようだ。クラウドベンダーと連携してクラウドプロバイダのSPのEntityを使う方法と、Databricks上でクラウドベンダー非依存のSPのEntityを使う方法と、二つのやり方があるようだ。
+個人アカウントでは、ブラウザを経由したOAuth認証(U2M認証)ではなく、Service Principal の認証にはブラウザを使わないM2M認証を使った認証が使える。事前に発行しておいたOAuth Client SecretをCI/CD環境のシークレットマネージャーに保存しておいて使うと良さそう。
 - CI/CDに触れる
 - Secretsに触れる
 
