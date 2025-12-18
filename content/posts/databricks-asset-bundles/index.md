@@ -91,27 +91,29 @@ Run URL: https://xxxx.cloud.databricks.com/?o=2439733251406638#job/1657109935911
 
 {{< figure src="hello-job-run.png" alt="CLIから起動されたhello-job" caption="CLIから起動されたhello-job" >}}
 
-## 1. targetでデプロイ先の環境を切り替える
+Databricks Asset Bundlesの使用感がわかったところで、ここからは本番利用を見据えた場合に使っておきたい機能ややっておきたい設定を一つずつ見ていきます。
+
+# 1. targetでデプロイ先の環境を切り替える
 -
 
-## 2. target毎に異なるResourceをデプロイする
+# 2. target毎に異なるResourceをデプロイする
 - 
 
-## 3. modeを使いtarget毎に共通のメタデータをつける
+# 3. modeを使いtarget毎に共通のメタデータをつける
 -
 
-## 4. presetでカスタマイズした独自のmodeを作る
+# 4. presetでカスタマイズした独自のmodeを作る
 - 
 
-## 5. 個人ユーザでなくService Principalを使う
+# 5. 個人ユーザでなくService Principalを使う
 - CI/CDに触れる
 - Secretsに触れる
 
-## 6. 肥大化したBundleは複数のBundleに分割する
+# 6. 肥大化したBundleは複数のBundleに分割する
 - 
 
-## 7. シェルスクリプトの代わりにscriptsを活用する
+# 7. シェルスクリプトの代わりにscriptsを活用する
 - 
 
-## 8. `databricks bundle plan`で作られたPlanファイルをTerraformで可視化する
+# 8. `databricks bundle plan`で作られたPlanファイルをTerraformで可視化する
 - 
