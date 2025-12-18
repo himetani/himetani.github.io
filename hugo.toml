@@ -31,7 +31,7 @@ publishDir = "docs"
 
 [markup]
   [markup.highlight]
-    style = 'tokyonight-moon'
+    style = 'catppuccin-frappe'
 
   [markup.goldmark]
     [markup.goldmark.renderer]
