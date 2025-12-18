@@ -41,6 +41,8 @@
   <p class="sr-only">{{ .Type }} code snippet end</p>
 
   {{ with .Attributes.caption }}
-    <figcaption class="text-center italic text-neutral-600 dark:text-white/70">{{ . }}</figcaption>
+    <figcaption>
+      <p>{{ . }}</p>
+    </figcaption>
   {{ end }}
 </figure>

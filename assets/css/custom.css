@@ -29,3 +29,16 @@
 .codeblock.has-filename .highlight pre {
   padding-top: 2.0rem !important;
 }
+
+/* Style code block captions to match image captions */
+.codeblock figcaption {
+  color: var(--tw-prose-captions);
+  font-size: 0.875em;
+  line-height: 1.4285714;
+  margin-top: 0.8571429em;
+  text-align: center;
+}
+
+.codeblock figcaption p {
+  margin: 0;
+}
