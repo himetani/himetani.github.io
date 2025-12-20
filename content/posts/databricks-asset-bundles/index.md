@@ -1,122 +1,209 @@
 +++
-title = "Databricks Asset Bundlesの運用を意識した設計"
-date = 2025-12-14T14:38:38+09:00
+title = "Databricks Asset Bundlesの運用を意識した設計のポイント"
+date = 2025-12-24T00:00:00+09:00
 draft  = true
 tags = ["databricks", "terraform"]
 +++
 
-Databricks Asset Bundlesの運用を意識して、使うと良さそうな機能や設定方法について調べました。
+Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。
 
 <!--more-->
 
-`Databricks Asset Bundles`は便利で実用的なツールであるにも関わらず公式ドキュメント以外にあまり情報がないように思います。
-そこで、本番利用を見据えて機能や設定方法について調べ、まとめてみました。
-この記事はDatabricks Advent CalendarのN日目の記事です。
+この記事は[Databricks Advent Calendar シリーズ２](https://qiita.com/advent-calendar/2025/databricks)の24日目の記事です。
 
-# 調査に使った環境やツール
-- Databricks CLI (v0.280.0)
-- Databricks Free Edition
+Databricks Asset Bundles をすでに触ったことがあり、PoC から一歩進んだ使い方を考え始めた方向けの内容です。
+PoCではあまり意識しなくてよかった前提が、運用では変わることがあります。
+本記事では自分がつまずいたポイントを整理します。
+筆者個人の見解を示すもので特定の組織・案件を示すものではありません。実装例は説明のため簡略化してあります。
 
-Databricks Free EditionはDatabricksが提供する無料で利用できる環境です。
-AWS/Azure/GCPなどのクラウドベンダーのアカウントが不要でDatabricksにサインアップすれば利用できます。
-ネットワーク関連などクラウドベンダ依存の設定をできない、computeはserverlessのみ、などいくつか制限がありますが、
-今回試したかった`Databricks Asset Bundles`の基本的な機能はサポートされているのでこちらを使います。
+# 1. 環境固有のジョブの差分をどこで吸収するか？
+A. 環境差分は一つのBundle定義の中に閉じ込めtargetで切り替える
 
-# Databricks Asset Bundlesとは
+PoC では、一つのBundleに「開発環境だけで使うジョブ」や「本番環境でのみ有効なジョブ」が混在していても、“とりあえず動けばよい”状態になりがちで問題になりません。
+しかし、運用フェーズに入ると「どのジョブがどの環境で有効なのか」という判断が運用に委ねられます。
+暗黙知になりやすく、メンバーの入れ替わりや運用の長期化により、本来不要なジョブが本番環境で実行されるといったミスを招きやすくなります。
 
-Databricksのジョブやnotebookなど各種リソースをコードとして定義・管理・デプロイすることを可能にするツールです。
-Bundleと呼ばれるYAML形式のファイルでリソースを定義し、Databricks CLIに組み込まれた`databricks bundle`サブコマンドでデプロイを実行できます。最小構成のBundle定義の例を示します。
+この問題に対して、環境ごとにBundle定義を分けて運用するというナイーブな対応に寄りがちです。
+自分も安易にこの対応を選んだことがあります。
+この場合、
+- 両環境で共通して使うジョブや設定が二重管理になる
+- 片方の環境にだけ変更が入りもう片方の環境と挙動がズレるといった設定ドリフトが起きやすい
+- レビューや調査のコストも増える
+などの問題がありました。
 
-```yaml {filename="databricks.yml" caption="最小構成のDatabricks Asset Bundle定義例"}
+そこで、(面倒ですが) 環境差分があるリソースについて整理し、一つのBundle定義の中に閉じ込め、targetで切り替えるのが良いです。
+環境ごとの差分はtarget.resources配下に、環境をまたいで共通な定義はrootのresourcesに定義します。
+こうすることで、環境固有の違いと共通部分の境界が明確になり、運用時に「どこを見れば差分が分かるか」を判断しやすくなります。
+
+```sh { filename="プロジェクト構成例"}
+my-bundle/
+├── databricks.yml
+└── resources/
+    └── jobs.yml
+```
+
+```yaml { filename="resources/jobs.yml"}
+resources:
+  jobs:
+    # 共通ジョブ（dev/prod 両方にデプロイされる）
+    etl_main:
+      name: etl_main
+      ... # Jobの詳細の定義
+```
+
+```yaml { filename="databricks.yml" }
 bundle:
-  name: minimal_bundle
+  name: my-bundle
+
+# 共通リソースは root の resources で読み込む
+include:
+  - resources/*.yml
 
 targets:
   dev:
+    mode: development
     workspace:
-      host: https://adb-xxxxxxxxxxxx.xx.azuredatabricks.net
+      host: https://<dev-workspace-url>
+    # dev だけに存在するジョブはここに “追加” する
+    resources:
+      jobs:
+        dev_smoke_test:
+          name: dev_smoke_test
+          ... # Jobの詳細の定義
+          
+  prod:
+    mode: production
+    workspace:
+      host: https://<prod-workspace-url>
+    # prod だけに存在するジョブはここに “追加” する
+    resources:
+      jobs:
+        prod_backfill:
+          name: prod_backfill
+          ... # Jobの詳細の定義
+
+```
+
+
+# 2. 誰がデプロイする前提で設計するか？
+A. 環境によってデプロイの主体を分ける
+
+PoC 段階では、動くものをできるだけ早く実環境にデプロイすることが優先され、 個人ユーザによるデプロイが許容されるケースも少なくありません。
+「誰がデプロイしたか」よりも、「動くかどうか」が重要だからです。
+
+しかし、実運用フェーズで個人ユーザによるデプロイを許容する運用を続けると様々な問題が起きます。
+- 組織変更やメンバーの入れ替えによってデプロイした本人がすでに存在しないジョブが残る
+- ジョブの存在理由や変更履歴を説明できず、調査や判断のコストが高くなる
+- デプロイ権限を持つ個人ユーザには過剰な権限を付与される。手動操作によるミスが起きる
+
+デプロイに対して「誰が・どの判断で・何をデプロイしたのか」説明できるようにすることがより重要になってきます。
+
+そこで、実稼働環境では個人ではなくシステム主体でのデプロイを前提に設計する必要があります。
+Service Principal のようなシステムに紐づいた主体を使い、CI/CD パイプライン経由でのみデプロイを許可することで仕組みとして制御できます。
+
+一方で、開発環境では、新しいジョブの動作確認や試行錯誤のためには、各開発者が気軽にデプロイできることが最重要です。
+過去に、開発環境へのデプロイもすべて CI/CD パイプライン経由に制限したことがありますが、 開発中のジョブを素早く試せず開発のアジリティを下げることになりました。
+
+これらを踏まえ、本番環境と開発環境では前提を切り替える設計を取ります。
+開発環境では、各開発者がローカル環境から個人ユーザを使ってデプロイできるようにし、 CI/CD パイプライン経由でのシステム向け Identity 使からのデプロイに限定します。
+
+本番環境と開発環境に求められる役割の違いを理解し、それぞれに適した前提を置くことが重要だと考えています。
+
+```yaml { filename="databricks.yml" }
+bundle:
+  name: my-bundle 
 
 resources:
   jobs:
-    hello_job:
-      name: hello-job
-      tasks:
-        - task_key: hello_task
-          notebook_task:
-            notebook_path: ./src/hello.py
-```
+    sample_job:
+      name: sample-job-prod
+      ... # Jobの詳細の定義
 
-Bundle定義を作成したのち、一連のコマンド操作を経て、Databricksにジョブをデプロイできます。
+targets:
+  dev:
+    mode: development
+    workspace:
+      host: https://<dev-workspace-url>
 
+    permissions:
+      - level: CAN_MANAGE
+        group_name: dev-databricks-users # 事前に個人ユーザ用のグループ作っておき、グループに対してJobの管理権限を付与
 
-```bash
-> databricks bundle validate # Bundle定義のバリデーション
-Name: asset_bundles_example
-Target: dev
-Workspace:
-  Host: https://xxxx.cloud.databricks.com
-  User: my_user_name
-  Path: /Workspace/Users/my_user_name/.bundle/asset_bundles_example/dev
+  # Service PrincipalのToken管理/権限管理により、CI/CDパイプラインのみにデプロイを許可するよう別途設定
+  prod:
+    mode: production
+    workspace:
+      host: https://<prod-workspace-url>
 
-Validation OK!
+    permissions:
+      - level: CAN_MANAGE
+        service_principal_name: sp-databricks-deployer # Service Principalに対してJobの管理権限を付与
 
-> databricks bundle plan # プランの作成
-create jobs.hello_job
-
-Plan: 1 to add, 0 to change, 0 to delete, 0 unchanged
-
-> databricks bundle deploy # デプロイの実行
-Uploading bundle files to /Workspace/Users/my_user_name/.bundle/asset_bundles_example/dev/files...
-Deploying resources...
-Updating deployment state...
-Deployment complete!
 ```
 
 
-{{< figure src="hello-job.png" alt="hello-jobが作成される" caption="hello-jobが作成される" >}}
+# 3. 一つのBundleにどれくらいの責務を持たせるか？
+A. 変更単位や責任の境界を明確にしてデータドメインや変更頻度を単位とし責務を分割する
 
-これらのコマンドの内部では、`Terraform`が使われています。`YAML`で記述されたBundle定義が`JSON`形式のTerraform定義に変換され、`Terraform`が変更を適用しています。
-デバッグログを出力してみると、`Databricks API`が利用されていることが確認できます。
+PoC 段階では、あまり深く考えずに一つのBundleにすべてのリソース定義をまとめることが多いです。
+リソース数が少なく、デプロイで多少エラーが出てもリトライすればよく、最終的に目的のリソースが作成・更新できれば十分だからです。
+
+しかし、実運用フェーズに入ると状況は変わります。
+一部の変更のためのデプロイが、関係のないリソースにまで影響する可能性があるからです。
+このような問題が一度でも起きると、運用上のリスクや確認コストを大きく押し上げることになります。
+
+自分の経験では、Bundleに含まれるリソースの数が一定規模を超えると、デプロイの失敗が発生しやすくなりました。
+この失敗の原因は特定ドメインのジョブの数が増えすぎたことでした。`databricks bundle deploy`を実行すると、たとえBundle変更が一部分の変更であっても、すべてのリソースに対してAPI呼び出しが行われます。
+この挙動により、タイミングが悪ければAPIレートリミットによるエラーが発生しやすくなり、お祈りデプロイをせざるを得ませんでした。
+一度でもデプロイ失敗を経験すると、その失敗に備え、全てのリソースへの影響確認をする運用手順が必要になります。
+
+このような経験から、Bundleは技術的な単位ではなく、変更や責任の単位として設計する必要があると考えるようになりました。
+責務が大きくなりすぎると、リソースの変更単位と実際のデプロイへの影響範囲が乖離し、運用上の不安定さや説明コストにつながります。
+
+Bundleを分割するかどうかは、次の観点で判断できます。
+1. リソース数が多く、デプロイが遅い・失敗しやすい
+2. 変更頻度や性質の異なるリソースが含まれる
+3. まとめてロールバックできないリソースが含まれる
+4. 複数のチームや責任範囲の異なるリソースが混在している
+
+小規模な構成では、一つのBundleで十分な場合が多く最初から分割を前提に設計する必要はありませんが、
+上記の判断軸に明確に引っかかり始めた場合、一つのBundleにまとめ続けることで運用上のリスクやコストを押し上げます。
+
+Bundleの分割は「とりあえず細かくするための手段」ではなく、変更単位や責任の境界を明確にするための設計判断として、必要になったタイミングで慎重に行うべきだと考えています。
+
+# 4. 意図しない変更を防ぐには？
+A. 変更内容をできるだけ小さく保ち内容を可視化して確認する
+
+PoC段階では、デプロイ時に細かな変更内容まで把握せずとも、思い切ってデプロイすることができます。
+影響範囲が小さく、最悪の場合でも再デプロイですぐに修正できるからです。
+一方で、本番環境での運用では、変更を適用する前に「何が変わるのか」「どこに影響が出るのか」を確認し、意図しない変更を事前に検知しインシデントを防ぐことが求められます。
+
+Databricks Asset Bundles では、`databricks bundle plan`でどのリソースが `add/change/delete/unchanged`か確認できますが、特にchangeのリソースについて、具体的にリソースのどの項目の設定が変わるかまでは分かりません。
+また、Asset Bundlesでは、既存リソースとBundle定義内のリソースの対応付けが内部のロジックに委ねられているため、 定義の書き方を少し変えただけで、意図しない差分として扱われる可能性もあります。
+
+そこで、`databricks bundle plan`の出力をそのまま鵜呑みにするのではなく、それプラスアルファの手段で変更内容を理解できる状態を作ることが重要です。
+いくつかのやり方が考えられます。
+
+1. `databricks bundle plan`で作成されたplanをTerraformのplanとして可視化する
+2. 変更対象リソースをできるだけ小さく保つ
+3. #3 で触れたように、Bundleの責務を適切な粒度に保つ
+
+意図しない変更を完全に防ぐことは難しいですが、「何が起きうるか」を事前に説明できる状態を作ることで、デプロイはより安全で再現性のあるものにできます。
+CI/CDパイプラインでplan結果を表示する仕組み作りをすると、レビューもスムーズになります。
+
+本番稼働中の一定規模を超えた数のResourceが定義された一つの大きなBundleを複数のBundleに分割したことがあるのですが、一度のマイグレーション作業での変更はできるだけ小さく保つ、変更対象と変更内容は可能な限り可視化して都度確認する、ことで不安を軽減し安全に作業することができました。
 
 
-作成されたジョブはDatabricks workspaceのGUIからだけでなく、CLIから起動させることができます。
+# まとめ
+Databricks Asset Bundles は、PoC 段階では多少ラフな設計でも問題になりにくい一方で、
+実運用では 環境差分・デプロイ主体・責務の境界・変更の可視性 を意識した設計が重要になります。
 
-```bash
-> databricks bundle run hello_job
-Run URL: https://xxxx.cloud.databricks.com/?o=2439733251406638#job/165710993591161/run/1034736749159003
+運用でつまずいた経験をもとに、
+1. 環境差分は Bundle を分けず target で切り替える
+2. 開発環境と本番環境で デプロイの前提を切り替える
+3. Bundle は 変更単位・責任の境界として適切な粒度に保つ
+4. 変更はできるだけ小さくし、事前に確認できる状態を作る
 
-2025-12-18 16:37:02 "hello-job" RUNNING
-2025-12-18 16:37:41 "hello-job" TERMINATED SUCCESS
-```
+といった設計上のポイントを整理しました。
 
-{{< figure src="hello-job-run.png" alt="CLIから起動されたhello-job" caption="CLIから起動されたhello-job" >}}
-
-Databricks Asset Bundlesの使用感がわかったところで、ここからは本番利用を見据えた場合に使っておきたい機能ややっておきたい設定を一つずつ見ていきます。
-
-# 1. targetでデプロイ先の環境を切り替える
--
-
-# 2. target毎に異なるResourceをデプロイする
-- 
-
-# 3. modeを使いtarget毎に共通のメタデータをつける
--
-
-# 4. presetでカスタマイズした独自のmodeを作る
-- 
-
-# 5. 個人ユーザでなくService Principalを使う
-個人のアカウントを使ってSTG環境やPROD環境にBundleをデプロイすることはリスクになります。
-そんなときはService Principalを使うようだ。クラウドベンダーと連携してクラウドプロバイダのSPのEntityを使う方法と、Databricks上でクラウドベンダー非依存のSPのEntityを使う方法と、二つのやり方があるようだ。
-個人アカウントでは、ブラウザを経由したOAuth認証(U2M認証)ではなく、Service Principal の認証にはブラウザを使わないM2M認証を使った認証が使える。事前に発行しておいたOAuth Client SecretをCI/CD環境のシークレットマネージャーに保存しておいて使うと良さそう。
-- CI/CDに触れる
-- Secretsに触れる
-
-# 6. 肥大化したBundleは複数のBundleに分割する
-- 
-
-# 7. シェルスクリプトの代わりにscriptsを活用する
-- 
-
-# 8. `databricks bundle plan`で作られたPlanファイルをTerraformで可視化する
-- 
+Databricks Asset Bundles を PoC から本番運用へ進める際の、 設計を見直すきっかけになれば幸いです。

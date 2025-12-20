@@ -18,6 +18,15 @@
   max-width: 100ch !important; /* Wider than default 65ch, but not full width */
 }
 
+/* Add spacing between code blocks */
+.codeblock {
+  margin-bottom: 1.5rem !important;
+}
+
+figure.codeblock {
+  margin-bottom: 1.5rem !important;
+}
+
 /* Code block with filename styling */
 .codeblock.has-filename .codeblock-filename {
   /* Ensure filename is visible on small screens too */
@@ -28,17 +37,4 @@
 /* Add padding to prevent overlap between filename and code content */
 .codeblock.has-filename .highlight pre {
   padding-top: 2.0rem !important;
-}
-
-/* Style code block captions to match image captions */
-.codeblock figcaption {
-  color: var(--tw-prose-captions);
-  font-size: 0.875em;
-  line-height: 1.4285714;
-  margin-top: 0.8571429em;
-  text-align: center;
-}
-
-.codeblock figcaption p {
-  margin: 0;
 }
