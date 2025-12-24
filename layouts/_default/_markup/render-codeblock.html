@@ -1,8 +1,20 @@
-{{- $id := printf "codeblock-%02d" ( add .Ordinal 1) -}}
-{{- $filename := .Attributes.filename -}}
-<figure class="codeblock not-prose relative scroll-mt-8{{ if $filename }} has-filename{{ end }}" id="{{ $id }}" {{ if $filename }}data-filename="{{ $filename }}"{{ end }}>
+{{- $id := printf "codeblock-%02d" ( add .Ordinal 1) -}} {{- $filename :=
+.Attributes.filename -}}
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6{{ if $filename }} has-filename{{ end }}"
+  id="{{ $id }}"
+  {{
+  if
+  $filename
+  }}data-filename="{{ $filename }}"
+  {{
+  end
+  }}
+>
   {{- if $filename -}}
-  <div class="codeblock-filename absolute left-0 top-0 rounded-tr-sm rounded-br-sm bg-white/10 px-3 py-1 text-white/70 font-mono text-xs font-semibold">
+  <div
+    class="codeblock-filename absolute left-0 top-0 rounded-tr-sm rounded-br-sm bg-white/10 px-3 py-1 text-white/70 font-mono text-xs font-semibold"
+  >
     {{ $filename }}
   </div>
   {{- end -}}
@@ -10,7 +22,10 @@
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">{{ .Type }}</span>
       </div>
       <div>
@@ -39,8 +54,4 @@
   <p class="sr-only">{{ .Type }} code snippet start</p>
   {{ transform.Highlight .Inner .Type .Options }}
   <p class="sr-only">{{ .Type }} code snippet end</p>
-
-  {{ with .Attributes.caption }}
-    <figcaption class="text-center italic text-neutral-600 dark:text-white/70">{{ . }}</figcaption>
-  {{ end }}
 </figure>

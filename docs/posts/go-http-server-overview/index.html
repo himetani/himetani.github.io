@@ -46,7 +46,7 @@
 
   
     
-    <link rel="stylesheet" href="/css/custom.min.6e792c50f2b8fca04cc248af661d98f156c27d5587e9d37349ded8a7b36e7c2b.css" integrity="sha256-bnksUPK4/KBMwkivZh2Y8VbCfVWH6dNzSd7Yp7NufCs=" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.min.0a7adef24a388f42ac86afcc9dd64bb88d6e364fbb0dc31391ad76fb788d7ee2.css" integrity="sha256-Cnre8ko4j0Kshq/MndZLuI1uNk&#43;7DcMTka12&#43;3iNfuI=" crossorigin="anonymous">
   
 
 
@@ -208,11 +208,18 @@
     </a>
   
 </h2>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-01" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-01"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative"></span>
       </div>
       <div>
@@ -271,8 +278,6 @@
 	ServeHTTP(ResponseWriter, *Request)
 }</code></pre>
   <p class="sr-only"> code snippet end</p>
-
-  
 </figure>
 <p>第一引数にResponseWriter型、第二引数にRequestのポインタ型を取る<code>ServeHTTP</code>というメソッドを実装している型を扱うためのインタフェース。
 Goのhttpサーバは、この<code>Handler</code>インタフェースを上手く使っている。<br>
@@ -303,11 +308,18 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
   
 </h2>
 <p>ググってみて、以下のようなコードを書くはず。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-02" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-02"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -362,34 +374,32 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#86e1fc">package</span> main
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#81c8be">package</span> main
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#86e1fc">import</span> (
-</span></span><span style="display:flex;"><span>	<span style="color:#c3e88d">&#34;fmt&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c3e88d">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#81c8be">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6d189">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6d189">&#34;net/http&#34;</span>
 </span></span><span style="display:flex;"><span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#c099ff">type</span> fuga <span style="color:#4fd6be">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#e78284">type</span> fuga <span style="color:#e78284">int</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#c099ff">func</span> (f <span style="color:#c3e88d;font-weight:bold">*</span>fuga) <span style="color:#82aaff">ServeHTTP</span>(w http.ResponseWriter, r <span style="color:#c3e88d;font-weight:bold">*</span>http.Request) {
-</span></span><span style="display:flex;"><span>	fmt.<span style="color:#82aaff">Fprintf</span>(w, <span style="color:#c3e88d">&#34;fuga type: %d&#34;</span>, <span style="color:#c3e88d;font-weight:bold">*</span>f)
+</span></span><span style="display:flex;"><span><span style="color:#e78284">func</span> (f <span style="color:#99d1db;font-weight:bold">*</span>fuga) <span style="color:#8caaee">ServeHTTP</span>(w http.ResponseWriter, r <span style="color:#99d1db;font-weight:bold">*</span>http.Request) {
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#8caaee">Fprintf</span>(w, <span style="color:#a6d189">&#34;fuga type: %d&#34;</span>, <span style="color:#99d1db;font-weight:bold">*</span>f)
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#c099ff">func</span> <span style="color:#82aaff">main</span>() {
-</span></span><span style="display:flex;"><span>	http.<span style="color:#82aaff">HandleFunc</span>(<span style="color:#c3e88d">&#34;/hoge&#34;</span>, <span style="color:#c099ff">func</span>(w http.ResponseWriter, r <span style="color:#c3e88d;font-weight:bold">*</span>http.Request) {
-</span></span><span style="display:flex;"><span>		fmt.<span style="color:#82aaff">Fprintf</span>(w, <span style="color:#c3e88d">&#34;Hello world&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e78284">func</span> <span style="color:#8caaee">main</span>() {
+</span></span><span style="display:flex;"><span>	http.<span style="color:#8caaee">HandleFunc</span>(<span style="color:#a6d189">&#34;/hoge&#34;</span>, <span style="color:#e78284">func</span>(w http.ResponseWriter, r <span style="color:#99d1db;font-weight:bold">*</span>http.Request) {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#8caaee">Fprintf</span>(w, <span style="color:#a6d189">&#34;Hello world&#34;</span>)
 </span></span><span style="display:flex;"><span>	})
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	f <span style="color:#c3e88d;font-weight:bold">:=</span> <span style="color:#82aaff">fuga</span>(<span style="color:#ffc777">1</span>)
-</span></span><span style="display:flex;"><span>	http.<span style="color:#82aaff">Handle</span>(<span style="color:#c3e88d">&#34;/fuga&#34;</span>, <span style="color:#c3e88d;font-weight:bold">&amp;</span>f)
+</span></span><span style="display:flex;"><span>	f <span style="color:#99d1db;font-weight:bold">:=</span> <span style="color:#8caaee">fuga</span>(<span style="color:#ef9f76">1</span>)
+</span></span><span style="display:flex;"><span>	http.<span style="color:#8caaee">Handle</span>(<span style="color:#a6d189">&#34;/fuga&#34;</span>, <span style="color:#99d1db;font-weight:bold">&amp;</span>f)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c099ff">if</span> err <span style="color:#c3e88d;font-weight:bold">:=</span> http.<span style="color:#82aaff">ListenAndServe</span>(<span style="color:#c3e88d">&#34;:8080&#34;</span>, <span style="color:#ffc777">nil</span>); err <span style="color:#c3e88d;font-weight:bold">!=</span> <span style="color:#ffc777">nil</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#c3e88d">panic</span>(err)
+</span></span><span style="display:flex;"><span>	<span style="color:#ca9ee6">if</span> err <span style="color:#99d1db;font-weight:bold">:=</span> http.<span style="color:#8caaee">ListenAndServe</span>(<span style="color:#a6d189">&#34;:8080&#34;</span>, <span style="color:#ef9f76">nil</span>); err <span style="color:#99d1db;font-weight:bold">!=</span> <span style="color:#ef9f76">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#99d1db">panic</span>(err)
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p><code>HandleFunc</code>メソッドや<code>Handle</code>メソッドを使ってhandlerを登録することができるのだな、handlerは特定のURLにマッピングされ、マッチするURLへのアクセス時にhandlerが実行されるのだな、と直感的に理解できると思う。</p>
 <h2 id="本格的に使おうとするとき" class="scroll-mt-8 group">
@@ -461,11 +471,18 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 </h2>
 <p>Goのソースコードから、雰囲気を汲み取ってみる。長ったらしいので、退屈であれば<a href="#anchor">主要な構成要素とHandlerインタフェース</a>まで読み飛ばしてもらってもいいと思う。
 まずは、<code>http.ListenAndServe(&quot;:8080&quot;, nil)</code>の実行後の挙動を追う。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-03" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-03"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -520,23 +537,28 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">2966</span> <span style="color:#444a73;font-style:italic">// ListenAndServe always returns a non-nil error.</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2967</span> <span style="color:#c099ff">func</span> <span style="color:#82aaff">ListenAndServe</span>(addr <span style="color:#4fd6be">string</span>, handler Handler) <span style="color:#4fd6be">error</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2968</span>     server <span style="color:#c3e88d;font-weight:bold">:=</span> <span style="color:#c3e88d;font-weight:bold">&amp;</span>Server{Addr: addr, Handler: handler}
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2969</span>     <span style="color:#c099ff">return</span> server.<span style="color:#82aaff">ListenAndServe</span>()
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2970</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">2966</span> <span style="color:#737994;font-style:italic">// ListenAndServe always returns a non-nil error.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2967</span> <span style="color:#e78284">func</span> <span style="color:#8caaee">ListenAndServe</span>(addr <span style="color:#e78284">string</span>, handler Handler) <span style="color:#e78284">error</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2968</span>     server <span style="color:#99d1db;font-weight:bold">:=</span> <span style="color:#99d1db;font-weight:bold">&amp;</span>Server{Addr: addr, Handler: handler}
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2969</span>     <span style="color:#ca9ee6">return</span> server.<span style="color:#8caaee">ListenAndServe</span>()
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2970</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p><code>Server</code>を初期化して、初期化した<code>Server</code>の<code>ListenAndServe</code>メソッドを呼び出す。<br>
 <code>Server</code>は<code>Handler</code>インタフェースを持つが、これがすごく重要。<br>
 具象型ではなく、インタフェースになっているのがポイント。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-04" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-04"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -591,25 +613,23 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">2697</span> <span style="color:#444a73;font-style:italic">// ListenAndServe listens on the TCP network address srv.Addr and then</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2698</span> <span style="color:#444a73;font-style:italic">// calls Serve to handle requests on incoming connections.</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2699</span> <span style="color:#444a73;font-style:italic">// Accepted connections are configured to enable TCP keep-alives.</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2700</span> <span style="color:#444a73;font-style:italic">// If srv.Addr is blank, &#34;:http&#34; is used.</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2701</span> <span style="color:#444a73;font-style:italic">// ListenAndServe always returns a non-nil error.</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2702</span> <span style="color:#c099ff">func</span> (srv <span style="color:#c3e88d;font-weight:bold">*</span>Server) <span style="color:#82aaff">ListenAndServe</span>() <span style="color:#4fd6be">error</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2703</span>     addr <span style="color:#c3e88d;font-weight:bold">:=</span> srv.Addr
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2704</span>     <span style="color:#c099ff">if</span> addr <span style="color:#c3e88d;font-weight:bold">==</span> <span style="color:#c3e88d">&#34;&#34;</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2705</span>         addr = <span style="color:#c3e88d">&#34;:http&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2706</span>     }
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2707</span>     ln, err <span style="color:#c3e88d;font-weight:bold">:=</span> net.<span style="color:#82aaff">Listen</span>(<span style="color:#c3e88d">&#34;tcp&#34;</span>, addr)
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2708</span>     <span style="color:#c099ff">if</span> err <span style="color:#c3e88d;font-weight:bold">!=</span> <span style="color:#ffc777">nil</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2709</span>         <span style="color:#c099ff">return</span> err
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2710</span>     }
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2711</span>     <span style="color:#c099ff">return</span> srv.<span style="color:#82aaff">Serve</span>(tcpKeepAliveListener{ln.(<span style="color:#c3e88d;font-weight:bold">*</span>net.TCPListener)})
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2712</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">2697</span> <span style="color:#737994;font-style:italic">// ListenAndServe listens on the TCP network address srv.Addr and then</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2698</span> <span style="color:#737994;font-style:italic">// calls Serve to handle requests on incoming connections.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2699</span> <span style="color:#737994;font-style:italic">// Accepted connections are configured to enable TCP keep-alives.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2700</span> <span style="color:#737994;font-style:italic">// If srv.Addr is blank, &#34;:http&#34; is used.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2701</span> <span style="color:#737994;font-style:italic">// ListenAndServe always returns a non-nil error.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2702</span> <span style="color:#e78284">func</span> (srv <span style="color:#99d1db;font-weight:bold">*</span>Server) <span style="color:#8caaee">ListenAndServe</span>() <span style="color:#e78284">error</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2703</span>     addr <span style="color:#99d1db;font-weight:bold">:=</span> srv.Addr
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2704</span>     <span style="color:#ca9ee6">if</span> addr <span style="color:#99d1db;font-weight:bold">==</span> <span style="color:#a6d189">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2705</span>         addr = <span style="color:#a6d189">&#34;:http&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2706</span>     }
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2707</span>     ln, err <span style="color:#99d1db;font-weight:bold">:=</span> net.<span style="color:#8caaee">Listen</span>(<span style="color:#a6d189">&#34;tcp&#34;</span>, addr)
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2708</span>     <span style="color:#ca9ee6">if</span> err <span style="color:#99d1db;font-weight:bold">!=</span> <span style="color:#ef9f76">nil</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2709</span>         <span style="color:#ca9ee6">return</span> err
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2710</span>     }
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2711</span>     <span style="color:#ca9ee6">return</span> srv.<span style="color:#8caaee">Serve</span>(tcpKeepAliveListener{ln.(<span style="color:#99d1db;font-weight:bold">*</span>net.TCPListener)})
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2712</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p>TCPサーバをListenしている。この後、<code>func (srv *Server) Serve(l net.Listener) error {}</code>や<code>func (c *conn) serve(ctx context.Context) {}</code>が順次実行され、TCPサーバとしての役割を全うするがここでは割愛する。（長いので）</p>
 <p>注目したいのは、始めにインスタンス化した<code>Server</code>インスタンスが後続の処理に引き継がれていること。</p>
@@ -618,11 +638,18 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 <li><code>func (c *conn) serve(ctx context.Context) {}</code>のレシーバは<code>conn</code>のポインタで、<code>conn</code>はメンバとして<code>Server</code>のポインタを保持している</li>
 </ul>
 <p>なぜ<code>Server</code>インスタンスが引き継がれることが重要かというと、<code>Server</code>が持っている<code>Handler</code>が後の処理で使われるため。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-05" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-05"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -677,17 +704,22 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">1830</span>         serverHandler{c.server}.<span style="color:#82aaff">ServeHTTP</span>(w, w.req)</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">1830</span>         serverHandler{c.server}.<span style="color:#8caaee">ServeHTTP</span>(w, w.req)</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p><code>func (c *conn) serve(ctx context.Context) {}</code>の中のこの処理で、引き継がれた<code>Server</code>が持つ<code>Handler</code>インタフェースを使って、dispatchが始まる。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-06" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-06"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -742,29 +774,34 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">2560</span> <span style="color:#c099ff">func</span> (sh serverHandler) <span style="color:#82aaff">ServeHTTP</span>(rw ResponseWriter, req <span style="color:#c3e88d;font-weight:bold">*</span>Request) {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2561</span>     handler <span style="color:#c3e88d;font-weight:bold">:=</span> sh.srv.Handler
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2562</span>     <span style="color:#c099ff">if</span> handler <span style="color:#c3e88d;font-weight:bold">==</span> <span style="color:#ffc777">nil</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2563</span>         handler = DefaultServeMux
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2564</span>     }
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2565</span>     <span style="color:#c099ff">if</span> req.RequestURI <span style="color:#c3e88d;font-weight:bold">==</span> <span style="color:#c3e88d">&#34;*&#34;</span> <span style="color:#c3e88d;font-weight:bold">&amp;&amp;</span> req.Method <span style="color:#c3e88d;font-weight:bold">==</span> <span style="color:#c3e88d">&#34;OPTIONS&#34;</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2566</span>         handler = globalOptionsHandler{}
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2567</span>     }
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2568</span>     handler.<span style="color:#82aaff">ServeHTTP</span>(rw, req)
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2569</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">2560</span> <span style="color:#e78284">func</span> (sh serverHandler) <span style="color:#8caaee">ServeHTTP</span>(rw ResponseWriter, req <span style="color:#99d1db;font-weight:bold">*</span>Request) {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2561</span>     handler <span style="color:#99d1db;font-weight:bold">:=</span> sh.srv.Handler
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2562</span>     <span style="color:#ca9ee6">if</span> handler <span style="color:#99d1db;font-weight:bold">==</span> <span style="color:#ef9f76">nil</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2563</span>         handler = DefaultServeMux
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2564</span>     }
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2565</span>     <span style="color:#ca9ee6">if</span> req.RequestURI <span style="color:#99d1db;font-weight:bold">==</span> <span style="color:#a6d189">&#34;*&#34;</span> <span style="color:#99d1db;font-weight:bold">&amp;&amp;</span> req.Method <span style="color:#99d1db;font-weight:bold">==</span> <span style="color:#a6d189">&#34;OPTIONS&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2566</span>         handler = globalOptionsHandler{}
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2567</span>     }
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2568</span>     handler.<span style="color:#8caaee">ServeHTTP</span>(rw, req)
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2569</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p>2561行目の<code>Handler</code>はinterfaceである。この<code>Handler</code>は、<code>http.ListenAndServe</code>関数の第２引数として指定された<code>Handler</code>である。
 <code>Handler</code>インタフェースを満たしていればどんな型であってもよいので、以降は<code>Handler</code>の実装により挙動が変わることになる（！）<br>
 ここからは<code>http.ListenAndServe</code>関数の第２引数を<code>nil</code>とした場合に使われるdefaultの<code>DefaultServeMux</code>の挙動を追っていく。
 <code>DefaultServeMux</code>はServeMux型で、もちろんServeMux型はServeHTTPを実装しており、<code>Handler</code>インタフェースを満たす。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-07" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-07"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -819,29 +856,34 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">2326</span> <span style="color:#444a73;font-style:italic">// ServeHTTP dispatches the request to the handler whose</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2327</span> <span style="color:#444a73;font-style:italic">// pattern most closely matches the request URL.</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2328</span> <span style="color:#c099ff">func</span> (mux <span style="color:#c3e88d;font-weight:bold">*</span>ServeMux) <span style="color:#82aaff">ServeHTTP</span>(w ResponseWriter, r <span style="color:#c3e88d;font-weight:bold">*</span>Request) {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2329</span>     <span style="color:#c099ff">if</span> r.RequestURI <span style="color:#c3e88d;font-weight:bold">==</span> <span style="color:#c3e88d">&#34;*&#34;</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2330</span>         <span style="color:#c099ff">if</span> r.<span style="color:#82aaff">ProtoAtLeast</span>(<span style="color:#ffc777">1</span>, <span style="color:#ffc777">1</span>) {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2331</span>             w.<span style="color:#82aaff">Header</span>().<span style="color:#82aaff">Set</span>(<span style="color:#c3e88d">&#34;Connection&#34;</span>, <span style="color:#c3e88d">&#34;close&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2332</span>         }
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2333</span>         w.<span style="color:#82aaff">WriteHeader</span>(StatusBadRequest)
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2334</span>         <span style="color:#c099ff">return</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2335</span>     }
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2336</span>     h, _ <span style="color:#c3e88d;font-weight:bold">:=</span> mux.<span style="color:#82aaff">Handler</span>(r)
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2337</span>     h.<span style="color:#82aaff">ServeHTTP</span>(w, r)
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2338</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">2326</span> <span style="color:#737994;font-style:italic">// ServeHTTP dispatches the request to the handler whose</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2327</span> <span style="color:#737994;font-style:italic">// pattern most closely matches the request URL.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2328</span> <span style="color:#e78284">func</span> (mux <span style="color:#99d1db;font-weight:bold">*</span>ServeMux) <span style="color:#8caaee">ServeHTTP</span>(w ResponseWriter, r <span style="color:#99d1db;font-weight:bold">*</span>Request) {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2329</span>     <span style="color:#ca9ee6">if</span> r.RequestURI <span style="color:#99d1db;font-weight:bold">==</span> <span style="color:#a6d189">&#34;*&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2330</span>         <span style="color:#ca9ee6">if</span> r.<span style="color:#8caaee">ProtoAtLeast</span>(<span style="color:#ef9f76">1</span>, <span style="color:#ef9f76">1</span>) {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2331</span>             w.<span style="color:#8caaee">Header</span>().<span style="color:#8caaee">Set</span>(<span style="color:#a6d189">&#34;Connection&#34;</span>, <span style="color:#a6d189">&#34;close&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2332</span>         }
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2333</span>         w.<span style="color:#8caaee">WriteHeader</span>(StatusBadRequest)
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2334</span>         <span style="color:#ca9ee6">return</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2335</span>     }
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2336</span>     h, _ <span style="color:#99d1db;font-weight:bold">:=</span> mux.<span style="color:#8caaee">Handler</span>(r)
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2337</span>     h.<span style="color:#8caaee">ServeHTTP</span>(w, r)
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2338</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p><code>mux.Handler(r)</code>で、事前に登録していたhandlerとURLのマッピング情報から実際にdispatchするhandlerを取得する。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-08" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-08"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -896,19 +938,17 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">2133</span> <span style="color:#c099ff">type</span> ServeMux <span style="color:#c099ff">struct</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2134</span>     mu    sync.RWMutex
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2135</span>     m     <span style="color:#c099ff">map</span>[<span style="color:#4fd6be">string</span>]muxEntry
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2136</span>     hosts <span style="color:#4fd6be">bool</span> <span style="color:#444a73;font-style:italic">// whether any patterns contain hostnames</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2137</span> }
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2138</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2139</span> <span style="color:#c099ff">type</span> muxEntry <span style="color:#c099ff">struct</span> {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2140</span>     h       Handler
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2141</span>     pattern <span style="color:#4fd6be">string</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">2142</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">2133</span> <span style="color:#e78284">type</span> ServeMux <span style="color:#e78284">struct</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2134</span>     mu    sync.RWMutex
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2135</span>     m     <span style="color:#e78284">map</span>[<span style="color:#e78284">string</span>]muxEntry
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2136</span>     hosts <span style="color:#e78284">bool</span> <span style="color:#737994;font-style:italic">// whether any patterns contain hostnames</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2137</span> }
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2138</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2139</span> <span style="color:#e78284">type</span> muxEntry <span style="color:#e78284">struct</span> {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2140</span>     h       Handler
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2141</span>     pattern <span style="color:#e78284">string</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">2142</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p><code>ServeMux</code>型は、キーがURLパターン、バリューが<code>Handler</code>を持つ<code>muxEntry</code>、なmap構造を持っており、ここにhandlerとURLのマッピング情報を保持している。<br>
 実は<code>http.HandleFunc()</code>や<code>http.Handle()</code>では、この<code>ServeMux</code>型のmにURLパターンとhandlerのマッピング情報が登録されている。</p>
@@ -1080,11 +1120,18 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
   
 </h3>
 <p>有名なフレームワークに、<a href="https://github.com/labstack/echo">labstack/echo</a>がある。このフレームワークでは、エントリポイントである<code>http.Server</code>をラップした<code>Echo</code>というコンポーネントで全ての処理を置き換えている。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-09" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-09"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -1139,24 +1186,24 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>Echo <span style="color:#c099ff">struct</span> {
-</span></span><span style="display:flex;"><span>		stdLogger        <span style="color:#c3e88d;font-weight:bold">*</span>stdLog.Logger
-</span></span><span style="display:flex;"><span>		colorer          <span style="color:#c3e88d;font-weight:bold">*</span>color.Color
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>Echo <span style="color:#e78284">struct</span> {
+</span></span><span style="display:flex;"><span>		stdLogger        <span style="color:#99d1db;font-weight:bold">*</span>stdLog.Logger
+</span></span><span style="display:flex;"><span>		colorer          <span style="color:#99d1db;font-weight:bold">*</span>color.Color
 </span></span><span style="display:flex;"><span>		premiddleware    []MiddlewareFunc
 </span></span><span style="display:flex;"><span>		middleware       []MiddlewareFunc
-</span></span><span style="display:flex;"><span>		maxParam         <span style="color:#c3e88d;font-weight:bold">*</span><span style="color:#4fd6be">int</span>
-</span></span><span style="display:flex;"><span>		router           <span style="color:#c3e88d;font-weight:bold">*</span>Router
+</span></span><span style="display:flex;"><span>		maxParam         <span style="color:#99d1db;font-weight:bold">*</span><span style="color:#e78284">int</span>
+</span></span><span style="display:flex;"><span>		router           <span style="color:#99d1db;font-weight:bold">*</span>Router
 </span></span><span style="display:flex;"><span>		notFoundHandler  HandlerFunc
 </span></span><span style="display:flex;"><span>		pool             sync.Pool
-</span></span><span style="display:flex;"><span>		Server           <span style="color:#c3e88d;font-weight:bold">*</span>http.Server
-</span></span><span style="display:flex;"><span>		TLSServer        <span style="color:#c3e88d;font-weight:bold">*</span>http.Server
+</span></span><span style="display:flex;"><span>		Server           <span style="color:#99d1db;font-weight:bold">*</span>http.Server
+</span></span><span style="display:flex;"><span>		TLSServer        <span style="color:#99d1db;font-weight:bold">*</span>http.Server
 </span></span><span style="display:flex;"><span>		Listener         net.Listener
 </span></span><span style="display:flex;"><span>		TLSListener      net.Listener
 </span></span><span style="display:flex;"><span>		AutoTLSManager   autocert.Manager
-</span></span><span style="display:flex;"><span>		DisableHTTP2     <span style="color:#4fd6be">bool</span>
-</span></span><span style="display:flex;"><span>		Debug            <span style="color:#4fd6be">bool</span>
-</span></span><span style="display:flex;"><span>		HideBanner       <span style="color:#4fd6be">bool</span>
-</span></span><span style="display:flex;"><span>		HidePort         <span style="color:#4fd6be">bool</span>
+</span></span><span style="display:flex;"><span>		DisableHTTP2     <span style="color:#e78284">bool</span>
+</span></span><span style="display:flex;"><span>		Debug            <span style="color:#e78284">bool</span>
+</span></span><span style="display:flex;"><span>		HideBanner       <span style="color:#e78284">bool</span>
+</span></span><span style="display:flex;"><span>		HidePort         <span style="color:#e78284">bool</span>
 </span></span><span style="display:flex;"><span>		HTTPErrorHandler HTTPErrorHandler
 </span></span><span style="display:flex;"><span>		Binder           Binder
 </span></span><span style="display:flex;"><span>		Validator        Validator
@@ -1164,16 +1211,21 @@ Goのhttpサーバは、この<code>Handler</code>インタフェースを上手
 </span></span><span style="display:flex;"><span>		Logger           Logger
 </span></span><span style="display:flex;"><span>	}</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p>TCPサーバとしての<code>Server</code>型のみ利用しており、<code>Server</code>型から<code>http.ServeMux</code>レイヤを呼び出すところのみ<code>Handler</code>インタフェースを使っているが、それ以外のところでは独自のシグネチャを採用している。</p>
 <p>以下は、echoのページにあるサンプル。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-10" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-10"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative"></span>
       </div>
       <div>
@@ -1257,8 +1309,6 @@ func hello(c echo.Context) error {
 	return c.String(http.StatusOK, &#34;Hello, World!&#34;)
 }</code></pre>
   <p class="sr-only"> code snippet end</p>
-
-  
 </figure>
 <p>httpサーバの起動は<code>e.Start(&quot;:1323&quot;)</code>という独自の実装となっている。また、echoへのhandlerの登録は、httpパッケージの<code>Handler</code>インタフェースではなく、独自のシグネチャとなっていることがわかる。</p>
 <h2 id="まとめ" class="scroll-mt-8 group">

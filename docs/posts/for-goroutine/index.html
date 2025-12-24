@@ -45,7 +45,7 @@
 
   
     
-    <link rel="stylesheet" href="/css/custom.min.6e792c50f2b8fca04cc248af661d98f156c27d5587e9d37349ded8a7b36e7c2b.css" integrity="sha256-bnksUPK4/KBMwkivZh2Y8VbCfVWH6dNzSd7Yp7NufCs=" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.min.0a7adef24a388f42ac86afcc9dd64bb88d6e364fbb0dc31391ad76fb788d7ee2.css" integrity="sha256-Cnre8ko4j0Kshq/MndZLuI1uNk&#43;7DcMTka12&#43;3iNfuI=" crossorigin="anonymous">
   
 
 
@@ -152,11 +152,18 @@
   
 </h2>
 <p>こんなコードを書くと、予期しない結果となる。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-01" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-01"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -211,46 +218,51 @@
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#ffc777">1</span> <span style="color:#86e1fc">package</span> main
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">2</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">3</span> <span style="color:#86e1fc">import</span> (
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">4</span>     <span style="color:#c3e88d">&#34;fmt&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">5</span>     <span style="color:#c3e88d">&#34;sync&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">6</span> )
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">7</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">8</span> <span style="color:#c099ff">type</span> Task <span style="color:#c099ff">struct</span> {
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">9</span>     name <span style="color:#4fd6be">string</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">10</span>     data <span style="color:#4fd6be">int32</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">11</span> }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">12</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">13</span> <span style="color:#c099ff">func</span> (t <span style="color:#c3e88d;font-weight:bold">*</span>Task) <span style="color:#82aaff">PrintData</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">14</span>     fmt.<span style="color:#82aaff">Println</span>(t.name, <span style="color:#c3e88d">&#34;:&#34;</span>, t.data)
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">15</span> }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">16</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">17</span> <span style="color:#c099ff">func</span> <span style="color:#82aaff">main</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">18</span>     <span style="color:#c099ff">var</span> wg sync.WaitGroup
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">19</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">20</span>     tasks <span style="color:#c3e88d;font-weight:bold">:=</span> []Task{{<span style="color:#c3e88d">&#34;hello&#34;</span>, <span style="color:#ffc777">1</span>}, {<span style="color:#c3e88d">&#34;world&#34;</span>, <span style="color:#ffc777">2</span>}}
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">21</span>     wg.<span style="color:#82aaff">Add</span>(<span style="color:#c3e88d">len</span>(tasks))
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">22</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">23</span>     <span style="color:#c099ff">for</span> _, task <span style="color:#c3e88d;font-weight:bold">:=</span> <span style="color:#c099ff">range</span> tasks {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">24</span>         <span style="color:#c099ff">go</span> <span style="color:#c099ff">func</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">25</span>             <span style="color:#c099ff">defer</span> wg.<span style="color:#82aaff">Done</span>()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">26</span>             task.<span style="color:#82aaff">PrintData</span>()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">27</span>         }()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">28</span>     }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">29</span>     wg.<span style="color:#82aaff">Wait</span>()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">30</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#ef9f76">1</span> <span style="color:#81c8be">package</span> main
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">3</span> <span style="color:#81c8be">import</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">4</span>     <span style="color:#a6d189">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">5</span>     <span style="color:#a6d189">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">6</span> )
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">7</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">8</span> <span style="color:#e78284">type</span> Task <span style="color:#e78284">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">9</span>     name <span style="color:#e78284">string</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">10</span>     data <span style="color:#e78284">int32</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">11</span> }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">12</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">13</span> <span style="color:#e78284">func</span> (t <span style="color:#99d1db;font-weight:bold">*</span>Task) <span style="color:#8caaee">PrintData</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">14</span>     fmt.<span style="color:#8caaee">Println</span>(t.name, <span style="color:#a6d189">&#34;:&#34;</span>, t.data)
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">15</span> }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">16</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">17</span> <span style="color:#e78284">func</span> <span style="color:#8caaee">main</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">18</span>     <span style="color:#e78284">var</span> wg sync.WaitGroup
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">19</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">20</span>     tasks <span style="color:#99d1db;font-weight:bold">:=</span> []Task{{<span style="color:#a6d189">&#34;hello&#34;</span>, <span style="color:#ef9f76">1</span>}, {<span style="color:#a6d189">&#34;world&#34;</span>, <span style="color:#ef9f76">2</span>}}
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">21</span>     wg.<span style="color:#8caaee">Add</span>(<span style="color:#99d1db">len</span>(tasks))
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">22</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">23</span>     <span style="color:#ca9ee6">for</span> _, task <span style="color:#99d1db;font-weight:bold">:=</span> <span style="color:#ca9ee6">range</span> tasks {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">24</span>         <span style="color:#ca9ee6">go</span> <span style="color:#e78284">func</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">25</span>             <span style="color:#ca9ee6">defer</span> wg.<span style="color:#8caaee">Done</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">26</span>             task.<span style="color:#8caaee">PrintData</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">27</span>         }()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">28</span>     }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">29</span>     wg.<span style="color:#8caaee">Wait</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">30</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p>実行結果</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-02" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-02"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">sh</span>
       </div>
       <div>
@@ -305,19 +317,24 @@
     </div>
   </aside>
   <p class="sr-only">sh code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>% go run main.go
-</span></span><span style="display:flex;"><span>world : <span style="color:#ffc777">2</span>
-</span></span><span style="display:flex;"><span>world : <span style="color:#ffc777">2</span></span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>% go run main.go
+</span></span><span style="display:flex;"><span>world : <span style="color:#ef9f76">2</span>
+</span></span><span style="display:flex;"><span>world : <span style="color:#ef9f76">2</span></span></span></code></pre></div>
   <p class="sr-only">sh code snippet end</p>
-
-  
 </figure>
 <p>goroutine化をしない同じようなコードだと、期待通りに動く。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-03" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-03"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -372,36 +389,41 @@
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#ffc777">1</span> <span style="color:#86e1fc">package</span> main
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">2</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">3</span> <span style="color:#86e1fc">import</span> <span style="color:#c3e88d">&#34;fmt&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">4</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">5</span> <span style="color:#c099ff">type</span> Task <span style="color:#c099ff">struct</span> {
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">6</span>     name <span style="color:#4fd6be">string</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">7</span>     data <span style="color:#4fd6be">int32</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">8</span> }
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">9</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">10</span> <span style="color:#c099ff">func</span> (t <span style="color:#c3e88d;font-weight:bold">*</span>Task) <span style="color:#82aaff">PrintData</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">11</span>     fmt.<span style="color:#82aaff">Println</span>(t.name, <span style="color:#c3e88d">&#34;:&#34;</span>, t.data)
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">12</span> }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">13</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">14</span> <span style="color:#c099ff">func</span> <span style="color:#82aaff">main</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">15</span>     tasks <span style="color:#c3e88d;font-weight:bold">:=</span> []Task{{<span style="color:#c3e88d">&#34;hello&#34;</span>, <span style="color:#ffc777">1</span>}, {<span style="color:#c3e88d">&#34;world&#34;</span>, <span style="color:#ffc777">2</span>}}
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">16</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">17</span>     <span style="color:#c099ff">for</span> _, task <span style="color:#c3e88d;font-weight:bold">:=</span> <span style="color:#c099ff">range</span> tasks {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">18</span>         task.<span style="color:#82aaff">PrintData</span>()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">19</span>     }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">20</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#ef9f76">1</span> <span style="color:#81c8be">package</span> main
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">3</span> <span style="color:#81c8be">import</span> <span style="color:#a6d189">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">4</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">5</span> <span style="color:#e78284">type</span> Task <span style="color:#e78284">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">6</span>     name <span style="color:#e78284">string</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">7</span>     data <span style="color:#e78284">int32</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">8</span> }
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">9</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">10</span> <span style="color:#e78284">func</span> (t <span style="color:#99d1db;font-weight:bold">*</span>Task) <span style="color:#8caaee">PrintData</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">11</span>     fmt.<span style="color:#8caaee">Println</span>(t.name, <span style="color:#a6d189">&#34;:&#34;</span>, t.data)
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">12</span> }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">13</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">14</span> <span style="color:#e78284">func</span> <span style="color:#8caaee">main</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">15</span>     tasks <span style="color:#99d1db;font-weight:bold">:=</span> []Task{{<span style="color:#a6d189">&#34;hello&#34;</span>, <span style="color:#ef9f76">1</span>}, {<span style="color:#a6d189">&#34;world&#34;</span>, <span style="color:#ef9f76">2</span>}}
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">16</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">17</span>     <span style="color:#ca9ee6">for</span> _, task <span style="color:#99d1db;font-weight:bold">:=</span> <span style="color:#ca9ee6">range</span> tasks {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">18</span>         task.<span style="color:#8caaee">PrintData</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">19</span>     }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">20</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p>実行結果</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-04" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-04"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">sh</span>
       </div>
       <div>
@@ -456,12 +478,10 @@
     </div>
   </aside>
   <p class="sr-only">sh code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>% go run main.go
-</span></span><span style="display:flex;"><span>hello : <span style="color:#ffc777">1</span>
-</span></span><span style="display:flex;"><span>world : <span style="color:#ffc777">2</span></span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>% go run main.go
+</span></span><span style="display:flex;"><span>hello : <span style="color:#ef9f76">1</span>
+</span></span><span style="display:flex;"><span>world : <span style="color:#ef9f76">2</span></span></span></code></pre></div>
   <p class="sr-only">sh code snippet end</p>
-
-  
 </figure>
 <h2 id="原因" class="scroll-mt-8 group">
   原因
@@ -492,11 +512,18 @@
 <li>for文の中の各iteration間で、共通のインスタンスが使われるため</li>
 </ul>
 <p>一つ目と二つ目のgoroutine間でtask変数のインスタンスは共有されている、かつ1回目のiterationで生成されたgoroutineはforループが終了した後に実行されるため、すでにtaskインスタンスの内容は、forループの最後のiteration時の内容に書き換わっている為に起こる。</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-05" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-05"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -551,51 +578,56 @@
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#ffc777">1</span> <span style="color:#86e1fc">package</span> main
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">2</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">3</span> <span style="color:#86e1fc">import</span> (
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">4</span>     <span style="color:#c3e88d">&#34;fmt&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">5</span>     <span style="color:#c3e88d">&#34;sync&#34;</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">6</span> )
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">7</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">8</span> <span style="color:#c099ff">type</span> Task <span style="color:#c099ff">struct</span> {
-</span></span><span style="display:flex;"><span>  <span style="color:#ffc777">9</span>     name <span style="color:#4fd6be">string</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">10</span>     data <span style="color:#4fd6be">int32</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">11</span> }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">12</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">13</span> <span style="color:#c099ff">func</span> (t Task) <span style="color:#82aaff">PrintData</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">14</span>     fmt.<span style="color:#82aaff">Printf</span>(<span style="color:#c3e88d">&#34;Address of receiver: %x\n&#34;</span>, t)
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">15</span>     fmt.<span style="color:#82aaff">Println</span>(t.name, <span style="color:#c3e88d">&#34;:&#34;</span>, t.data)
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">16</span> }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">17</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">18</span> <span style="color:#c099ff">func</span> <span style="color:#82aaff">main</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">19</span>     <span style="color:#c099ff">var</span> wg sync.WaitGroup
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">20</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">21</span>     tasks <span style="color:#c3e88d;font-weight:bold">:=</span> []Task{{<span style="color:#c3e88d">&#34;hello&#34;</span>, <span style="color:#ffc777">1</span>}, {<span style="color:#c3e88d">&#34;world&#34;</span>, <span style="color:#ffc777">2</span>}}
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">22</span>     wg.<span style="color:#82aaff">Add</span>(<span style="color:#c3e88d">len</span>(tasks))
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">23</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">24</span>     <span style="color:#c099ff">for</span> _, task <span style="color:#c3e88d;font-weight:bold">:=</span> <span style="color:#c099ff">range</span> tasks {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">25</span>         fmt.<span style="color:#82aaff">Printf</span>(<span style="color:#c3e88d">&#34;Address inside for-loop: %x\n&#34;</span>, task)
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">26</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">27</span>         <span style="color:#c099ff">go</span> <span style="color:#c099ff">func</span>() {
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">28</span>             <span style="color:#c099ff">defer</span> wg.<span style="color:#82aaff">Done</span>()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">29</span>             fmt.<span style="color:#82aaff">Printf</span>(<span style="color:#c3e88d">&#34;Address inside goroutine : %x\n&#34;</span>, task)
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">30</span>             task.<span style="color:#82aaff">PrintData</span>()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">31</span>         }()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">32</span>     }
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">33</span>
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">34</span>     wg.<span style="color:#82aaff">Wait</span>()
-</span></span><span style="display:flex;"><span> <span style="color:#ffc777">35</span> }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#ef9f76">1</span> <span style="color:#81c8be">package</span> main
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">3</span> <span style="color:#81c8be">import</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">4</span>     <span style="color:#a6d189">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">5</span>     <span style="color:#a6d189">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">6</span> )
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">7</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">8</span> <span style="color:#e78284">type</span> Task <span style="color:#e78284">struct</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#ef9f76">9</span>     name <span style="color:#e78284">string</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">10</span>     data <span style="color:#e78284">int32</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">11</span> }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">12</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">13</span> <span style="color:#e78284">func</span> (t Task) <span style="color:#8caaee">PrintData</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">14</span>     fmt.<span style="color:#8caaee">Printf</span>(<span style="color:#a6d189">&#34;Address of receiver: %x\n&#34;</span>, t)
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">15</span>     fmt.<span style="color:#8caaee">Println</span>(t.name, <span style="color:#a6d189">&#34;:&#34;</span>, t.data)
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">16</span> }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">17</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">18</span> <span style="color:#e78284">func</span> <span style="color:#8caaee">main</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">19</span>     <span style="color:#e78284">var</span> wg sync.WaitGroup
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">20</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">21</span>     tasks <span style="color:#99d1db;font-weight:bold">:=</span> []Task{{<span style="color:#a6d189">&#34;hello&#34;</span>, <span style="color:#ef9f76">1</span>}, {<span style="color:#a6d189">&#34;world&#34;</span>, <span style="color:#ef9f76">2</span>}}
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">22</span>     wg.<span style="color:#8caaee">Add</span>(<span style="color:#99d1db">len</span>(tasks))
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">23</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">24</span>     <span style="color:#ca9ee6">for</span> _, task <span style="color:#99d1db;font-weight:bold">:=</span> <span style="color:#ca9ee6">range</span> tasks {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">25</span>         fmt.<span style="color:#8caaee">Printf</span>(<span style="color:#a6d189">&#34;Address inside for-loop: %x\n&#34;</span>, task)
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">26</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">27</span>         <span style="color:#ca9ee6">go</span> <span style="color:#e78284">func</span>() {
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">28</span>             <span style="color:#ca9ee6">defer</span> wg.<span style="color:#8caaee">Done</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">29</span>             fmt.<span style="color:#8caaee">Printf</span>(<span style="color:#a6d189">&#34;Address inside goroutine : %x\n&#34;</span>, task)
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">30</span>             task.<span style="color:#8caaee">PrintData</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">31</span>         }()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">32</span>     }
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">33</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">34</span>     wg.<span style="color:#8caaee">Wait</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#ef9f76">35</span> }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <p>実行結果</p>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-06" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-06"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">sh</span>
       </div>
       <div>
@@ -650,18 +682,16 @@
     </div>
   </aside>
   <p class="sr-only">sh code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>% go run main.go
-</span></span><span style="display:flex;"><span>Address inside <span style="color:#c099ff">for</span>-loop: <span style="color:#c3e88d;font-weight:bold">{</span>68656c6c6f 1<span style="color:#c3e88d;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>Address inside <span style="color:#c099ff">for</span>-loop: <span style="color:#c3e88d;font-weight:bold">{</span>776f726c64 2<span style="color:#c3e88d;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>Address inside goroutine : <span style="color:#c3e88d;font-weight:bold">{</span>776f726c64 2<span style="color:#c3e88d;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>Address of receiver: <span style="color:#c3e88d;font-weight:bold">{</span>776f726c64 2<span style="color:#c3e88d;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>world : <span style="color:#ffc777">2</span>
-</span></span><span style="display:flex;"><span>Address inside goroutine : <span style="color:#c3e88d;font-weight:bold">{</span>776f726c64 2<span style="color:#c3e88d;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>Address of receiver: <span style="color:#c3e88d;font-weight:bold">{</span>776f726c64 2<span style="color:#c3e88d;font-weight:bold">}</span>
-</span></span><span style="display:flex;"><span>world : <span style="color:#ffc777">2</span></span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>% go run main.go
+</span></span><span style="display:flex;"><span>Address inside <span style="color:#ca9ee6">for</span>-loop: <span style="color:#99d1db;font-weight:bold">{</span>68656c6c6f 1<span style="color:#99d1db;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>Address inside <span style="color:#ca9ee6">for</span>-loop: <span style="color:#99d1db;font-weight:bold">{</span>776f726c64 2<span style="color:#99d1db;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>Address inside goroutine : <span style="color:#99d1db;font-weight:bold">{</span>776f726c64 2<span style="color:#99d1db;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>Address of receiver: <span style="color:#99d1db;font-weight:bold">{</span>776f726c64 2<span style="color:#99d1db;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>world : <span style="color:#ef9f76">2</span>
+</span></span><span style="display:flex;"><span>Address inside goroutine : <span style="color:#99d1db;font-weight:bold">{</span>776f726c64 2<span style="color:#99d1db;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>Address of receiver: <span style="color:#99d1db;font-weight:bold">{</span>776f726c64 2<span style="color:#99d1db;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>world : <span style="color:#ef9f76">2</span></span></span></code></pre></div>
   <p class="sr-only">sh code snippet end</p>
-
-  
 </figure>
 <h2 id="対策" class="scroll-mt-8 group">
   対策
@@ -714,11 +744,18 @@
     </a>
   
 </h3>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-07" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-07"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -773,13 +810,11 @@
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">27</span>         <span style="color:#c099ff">go</span> <span style="color:#c099ff">func</span>(t Task) {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">28</span>             <span style="color:#c099ff">defer</span> wg.<span style="color:#82aaff">Done</span>()
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">29</span>             t.<span style="color:#82aaff">PrintData</span>()
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">30</span>         }(task)</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">27</span>         <span style="color:#ca9ee6">go</span> <span style="color:#e78284">func</span>(t Task) {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">28</span>             <span style="color:#ca9ee6">defer</span> wg.<span style="color:#8caaee">Done</span>()
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">29</span>             t.<span style="color:#8caaee">PrintData</span>()
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">30</span>         }(task)</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <h3 id="2-for-loopの中で新しい変数を作る" class="scroll-mt-8 group">
   2. for-loopの中で新しい変数を作る
@@ -806,11 +841,18 @@
     </a>
   
 </h3>
-<figure class="codeblock not-prose relative scroll-mt-8" id="codeblock-08" ><aside
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6"
+  id="codeblock-08"
+  
+><aside
     class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
   >
     <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
-      <div class="small-caps shrink cursor-default truncate font-mono text-xs" aria-hidden="true">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
         <span class="relative">go</span>
       </div>
       <div>
@@ -865,17 +907,15 @@
     </div>
   </aside>
   <p class="sr-only">go code snippet start</p>
-  <div class="highlight"><pre tabindex="0" style="color:#c8d3f5;background-color:#222436;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ffc777">24</span>     <span style="color:#c099ff">for</span> _, task <span style="color:#c3e88d;font-weight:bold">:=</span> <span style="color:#c099ff">range</span> tasks {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">25</span>         task <span style="color:#c3e88d;font-weight:bold">:=</span> task
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">26</span>
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">27</span>         <span style="color:#c099ff">go</span> <span style="color:#c099ff">func</span>() {
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">28</span>             <span style="color:#c099ff">defer</span> wg.<span style="color:#82aaff">Done</span>()
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">29</span>             task.<span style="color:#82aaff">PrintData</span>()
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">30</span>         }()
-</span></span><span style="display:flex;"><span><span style="color:#ffc777">31</span>     }</span></span></code></pre></div>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ef9f76">24</span>     <span style="color:#ca9ee6">for</span> _, task <span style="color:#99d1db;font-weight:bold">:=</span> <span style="color:#ca9ee6">range</span> tasks {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">25</span>         task <span style="color:#99d1db;font-weight:bold">:=</span> task
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">26</span>
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">27</span>         <span style="color:#ca9ee6">go</span> <span style="color:#e78284">func</span>() {
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">28</span>             <span style="color:#ca9ee6">defer</span> wg.<span style="color:#8caaee">Done</span>()
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">29</span>             task.<span style="color:#8caaee">PrintData</span>()
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">30</span>         }()
+</span></span><span style="display:flex;"><span><span style="color:#ef9f76">31</span>     }</span></span></code></pre></div>
   <p class="sr-only">go code snippet end</p>
-
-  
 </figure>
 <h2 id="参考" class="scroll-mt-8 group">
   参考
