@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Databricks on himetani&#39;s cafe</title>
+    <link>https://himetani.github.io/tags/databricks/</link>
+    <description>Recent content in Databricks on himetani&#39;s cafe</description>
+    <generator>Hugo</generator>
+    <language>ja</language>
+    <copyright>Takafumi Tsukamoto</copyright>
+    <lastBuildDate>Wed, 24 Dec 2025 00:00:00 +0900</lastBuildDate>
+    <atom:link href="https://himetani.github.io/tags/databricks/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Databricks Asset Bundlesの運用を意識した設計のポイント</title>
+      <link>https://himetani.github.io/posts/databricks-asset-bundles/</link>
+      <pubDate>Wed, 24 Dec 2025 00:00:00 +0900</pubDate>
+      <guid>https://himetani.github.io/posts/databricks-asset-bundles/</guid>
+      <description>&lt;p&gt;Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

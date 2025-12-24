@@ -7,8 +7,22 @@
     <generator>Hugo</generator>
     <language>ja</language>
     <copyright>Takafumi Tsukamoto</copyright>
-    <lastBuildDate>Sun, 05 Aug 2018 18:03:09 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 24 Dec 2025 00:00:00 +0900</lastBuildDate>
     <atom:link href="https://himetani.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Databricks</title>
+      <link>https://himetani.github.io/tags/databricks/</link>
+      <pubDate>Wed, 24 Dec 2025 00:00:00 +0900</pubDate>
+      <guid>https://himetani.github.io/tags/databricks/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Terraform</title>
+      <link>https://himetani.github.io/tags/terraform/</link>
+      <pubDate>Wed, 24 Dec 2025 00:00:00 +0900</pubDate>
+      <guid>https://himetani.github.io/tags/terraform/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Golang</title>
       <link>https://himetani.github.io/tags/golang/</link>

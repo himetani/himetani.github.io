@@ -4,6 +4,10 @@
       "in": [],
       "out": []
     },
+    "/posts/databricks-asset-bundles/": {
+      "in": [],
+      "out": []
+    },
     "/posts/edit_simplenote_with_vim/": {
       "in": [],
       "out": []
@@ -34,6 +38,11 @@
       "permalink": "/posts/can_not_catch_sigkill_and_sigstop/",
       "section": "posts",
       "title": "GolangでSIGKILL、SIGSTOPはcatchできない"
+    },
+    "/posts/databricks-asset-bundles/": {
+      "permalink": "/posts/databricks-asset-bundles/",
+      "section": "posts",
+      "title": "Databricks Asset Bundlesの運用を意識した設計のポイント"
     },
     "/posts/edit_simplenote_with_vim/": {
       "permalink": "/posts/edit_simplenote_with_vim/",

@@ -1,0 +1,792 @@
+<!doctype html>
+<html
+  lang="ja"
+  dir="ltr"
+>
+  <head>
+    <meta charset="utf-8" />
+<meta name="language" content="en" />
+<meta name="viewport" content="width=device-width" />
+<title>
+    Databricks Asset Bundlesの運用を意識した設計のポイント | himetani&#39;s cafe
+</title>
+  <meta name="description" content="Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。" />
+<meta property="og:url" content="https://himetani.github.io/posts/databricks-asset-bundles/">
+  <meta property="og:site_name" content="himetani&#39;s cafe">
+  <meta property="og:title" content="Databricks Asset Bundlesの運用を意識した設計のポイント">
+  <meta property="og:description" content="Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。">
+  <meta property="og:locale" content="ja">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-12-24T00:00:00+09:00">
+    <meta property="article:modified_time" content="2025-12-24T00:00:00+09:00">
+    <meta property="article:tag" content="Databricks">
+    <meta property="article:tag" content="Terraform">
+
+
+  <meta itemprop="name" content="Databricks Asset Bundlesの運用を意識した設計のポイント">
+  <meta itemprop="description" content="Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。">
+  <meta itemprop="datePublished" content="2025-12-24T00:00:00+09:00">
+  <meta itemprop="dateModified" content="2025-12-24T00:00:00+09:00">
+  <meta itemprop="wordCount" content="4110">
+  <meta itemprop="keywords" content="Databricks,Terraform">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Databricks Asset Bundlesの運用を意識した設計のポイント">
+  <meta name="twitter:description" content="Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。">
+
+<link rel="canonical" href="https://himetani.github.io/posts/databricks-asset-bundles/" />
+
+
+  
+  <link rel="stylesheet" href="/css/index.min.02cc00ef9b3ae458f5cb05c0f4ea7f39d3f3212262170558d138610de894495a.css" integrity="sha256-AswA75s65Fj1ywXA9Op/OdPzISJiFwVY0ThhDeiUSVo=" crossorigin="anonymous">
+
+
+
+
+  
+    
+    <link rel="stylesheet" href="/css/custom.min.0a7adef24a388f42ac86afcc9dd64bb88d6e364fbb0dc31391ad76fb788d7ee2.css" integrity="sha256-Cnre8ko4j0Kshq/MndZLuI1uNk&#43;7DcMTka12&#43;3iNfuI=" crossorigin="anonymous">
+  
+
+
+
+      <script
+        src="/js/main.bbee9f2eac23db245a80660b41f5c5b77e27033c35737ef4fa111702c360409b.js"
+        integrity="sha256-u&#43;6fLqwj2yRagGYLQfXFt34nAzw1c370&#43;hEXAsNgQJs="
+        crossorigin="anonymous"
+        defer
+      ></script>
+  
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@id": "https://himetani.github.io/posts/databricks-asset-bundles/",
+  "@type": "BlogPosting",
+  "author": {
+    "@type": "Person",
+    "name": "Takafumi Tsukamoto"
+  },
+  "copyrightNotice": "Takafumi Tsukamoto",
+  "datePublished": "2025-12-24",
+  "description": "Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。",
+  "headline": "Databricks Asset Bundlesの運用を意識した設計のポイント",
+  "isPartOf": {
+    "@id": "https://himetani.github.io/posts/",
+    "@type": "Blog",
+    "name": "Posts"
+  },
+  "keywords": [
+    "Databricks",
+    "Terraform"
+  ],
+  "mainEntityOfPage": "https://himetani.github.io/posts/databricks-asset-bundles/",
+  "name": "Databricks Asset Bundlesの運用を意識した設計のポイント",
+  "timeRequired": "PT9M",
+  "url": "https://himetani.github.io/posts/databricks-asset-bundles/",
+  "wordCount": 4110
+}
+</script>
+
+
+  </head>
+  <body>
+    <div class="container mx-auto flex max-w-prose flex-col space-y-10 p-4 md:p-6">
+      <header class="flex flex-row items-center justify-between">
+        <div>
+  <a id="skip-nav" class="sr-only" href="#maincontent">Skip to main content</a>
+  <a class="font-semibold" href="/">himetani&#39;s cafe</a>
+</div>
+
+  <nav>
+    <ul class="flex flex-row items-center justify-end space-x-4">
+    <li>
+      <a>Notes</a
+      >
+    </li>
+    <li>
+      <a aria-current="true" class="ancestor" href="/posts/">Posts</a
+      >
+    </li>
+    <li>
+      <a href="/graph/">Graph</a
+      >
+    </li>
+    </ul>
+  </nav>
+
+
+      </header>
+      <main class="prose prose-slate relative md:prose-lg prose-h1:text-[2em]" id="maincontent">
+        <article class="main">
+    <header>
+      <h1 class="!mb-1">Databricks Asset Bundlesの運用を意識した設計のポイント</h1><div class="flex flex-row items-center space-x-4">
+          <time class="text-sm italic opacity-80" datetime="2025-12-24T00:00:00&#43;09:00"
+            >December 24, 2025</time
+          >
+        </div>
+    </header>
+
+    <p>Databricks Asset Bundles を実運用に載せる際に直面しやすい設計上の判断ポイントを、実体験をもとに整理します。</p>
+<p>この記事は<a href="https://qiita.com/advent-calendar/2025/databricks">Databricks Advent Calendar シリーズ２</a>の24日目の記事です。</p>
+<p>Databricks Asset Bundles をすでに触ったことがあり、PoC から一歩進んだ使い方を考え始めた方向けの内容です。
+PoCではあまり意識しなくてよかった前提が、運用では変わることがあります。
+本記事では自分がつまずいたポイントを整理します。
+筆者個人の見解を示すもので特定の組織・案件を示すものではありません。実装例は説明のため簡略化してあります。</p>
+<h2 id="1-環境固有のジョブの差分をどこで吸収するか" class="scroll-mt-8 group">
+  1. 環境固有のジョブの差分をどこで吸収するか？
+  
+    <a href="#1-%e7%92%b0%e5%a2%83%e5%9b%ba%e6%9c%89%e3%81%ae%e3%82%b8%e3%83%a7%e3%83%96%e3%81%ae%e5%b7%ae%e5%88%86%e3%82%92%e3%81%a9%e3%81%93%e3%81%a7%e5%90%b8%e5%8f%8e%e3%81%99%e3%82%8b%e3%81%8b"
+        class="no-underline hidden opacity-50 hover:opacity-100 !text-inherit group-hover:inline-block"
+        aria-hidden="true" title="Link to this heading" tabindex="-1">
+        <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+    </a>
+  
+</h2>
+<p>A. 環境差分は一つのBundle定義の中に閉じ込めtargetで切り替える</p>
+<p>PoC では、一つのBundleに「開発環境だけで使うジョブ」や「本番環境でのみ有効なジョブ」が混在していても、“とりあえず動けばよい”状態になりがちで問題になりません。
+しかし、運用フェーズに入ると「どのジョブがどの環境で有効なのか」という判断が運用に委ねられます。
+暗黙知になりやすく、メンバーの入れ替わりや運用の長期化により、本来不要なジョブが本番環境で実行されるといったミスを招きやすくなります。</p>
+<p>この問題に対して、環境ごとにBundle定義を分けて運用するというナイーブな対応に寄りがちです。
+自分も安易にこの対応を選んだことがあります。
+この場合、</p>
+<ul>
+<li>両環境で共通して使うジョブや設定が二重管理になる</li>
+<li>片方の環境にだけ変更が入りもう片方の環境と挙動がズレるといった設定ドリフトが起きやすい</li>
+<li>レビューや調査のコストも増える
+などの問題がありました。</li>
+</ul>
+<p>そこで、(面倒ですが) 環境差分があるリソースについて整理し、一つのBundle定義の中に閉じ込め、targetで切り替えるのが良いです。
+環境ごとの差分はtarget.resources配下に、環境をまたいで共通な定義はrootのresourcesに定義します。
+こうすることで、環境固有の違いと共通部分の境界が明確になり、運用時に「どこを見れば差分が分かるか」を判断しやすくなります。</p>
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6 has-filename"
+  id="codeblock-01"
+  data-filename="プロジェクト構成例"
+  
+><div
+    class="codeblock-filename absolute left-0 top-0 rounded-tr-sm rounded-br-sm bg-white/10 px-3 py-1 text-white/70 font-mono text-xs font-semibold"
+  >
+    プロジェクト構成例
+  </div><aside
+    class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
+  >
+    <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
+        <span class="relative">sh</span>
+      </div>
+      <div>
+        <clipboard-copy
+          type="button"
+          aria-label="Copy code to clipboard"
+          title="Copy code to clipboard"
+          class="block cursor-pointer transition-colors hover:text-sky-400"
+          target="#codeblock-01 code"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="lucide lucide-clipboard h-4 w-4"
+  viewBox="0 0 24 24"
+>
+  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+</svg>
+
+        </clipboard-copy>
+      </div>
+      <div>
+        <a
+          href="#codeblock-01"
+          class="block"
+          aria-label="Link to this code block"
+          title="Link to this code block"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+        </a>
+      </div>
+    </div>
+  </aside>
+  <p class="sr-only">sh code snippet start</p>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>my-bundle/
+</span></span><span style="display:flex;"><span>├── databricks.yml
+</span></span><span style="display:flex;"><span>└── resources/
+</span></span><span style="display:flex;"><span>    └── jobs.yml</span></span></code></pre></div>
+  <p class="sr-only">sh code snippet end</p>
+</figure>
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6 has-filename"
+  id="codeblock-02"
+  data-filename="resources/jobs.yml"
+  
+><div
+    class="codeblock-filename absolute left-0 top-0 rounded-tr-sm rounded-br-sm bg-white/10 px-3 py-1 text-white/70 font-mono text-xs font-semibold"
+  >
+    resources/jobs.yml
+  </div><aside
+    class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
+  >
+    <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
+        <span class="relative">yaml</span>
+      </div>
+      <div>
+        <clipboard-copy
+          type="button"
+          aria-label="Copy code to clipboard"
+          title="Copy code to clipboard"
+          class="block cursor-pointer transition-colors hover:text-sky-400"
+          target="#codeblock-02 code"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="lucide lucide-clipboard h-4 w-4"
+  viewBox="0 0 24 24"
+>
+  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+</svg>
+
+        </clipboard-copy>
+      </div>
+      <div>
+        <a
+          href="#codeblock-02"
+          class="block"
+          aria-label="Link to this code block"
+          title="Link to this code block"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+        </a>
+      </div>
+    </div>
+  </aside>
+  <p class="sr-only">yaml code snippet start</p>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ca9ee6">resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">jobs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic"># 共通ジョブ（dev/prod 両方にデプロイされる）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">etl_main</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">name</span>: etl_main
+</span></span><span style="display:flex;"><span>      ... <span style="color:#737994;font-style:italic"># Jobの詳細の定義</span></span></span></code></pre></div>
+  <p class="sr-only">yaml code snippet end</p>
+</figure>
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6 has-filename"
+  id="codeblock-03"
+  data-filename="databricks.yml"
+  
+><div
+    class="codeblock-filename absolute left-0 top-0 rounded-tr-sm rounded-br-sm bg-white/10 px-3 py-1 text-white/70 font-mono text-xs font-semibold"
+  >
+    databricks.yml
+  </div><aside
+    class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
+  >
+    <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
+        <span class="relative">yaml</span>
+      </div>
+      <div>
+        <clipboard-copy
+          type="button"
+          aria-label="Copy code to clipboard"
+          title="Copy code to clipboard"
+          class="block cursor-pointer transition-colors hover:text-sky-400"
+          target="#codeblock-03 code"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="lucide lucide-clipboard h-4 w-4"
+  viewBox="0 0 24 24"
+>
+  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+</svg>
+
+        </clipboard-copy>
+      </div>
+      <div>
+        <a
+          href="#codeblock-03"
+          class="block"
+          aria-label="Link to this code block"
+          title="Link to this code block"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+        </a>
+      </div>
+    </div>
+  </aside>
+  <p class="sr-only">yaml code snippet start</p>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ca9ee6">bundle</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">name</span>: my-bundle
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#737994;font-style:italic"># 共通リソースは root の resources で読み込む</span>
+</span></span><span style="display:flex;"><span><span style="color:#ca9ee6">include</span>:
+</span></span><span style="display:flex;"><span>  - resources/*.yml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ca9ee6">targets</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">dev</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">mode</span>: development
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">workspace</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">host</span>: https://&lt;dev-workspace-url&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic"># dev だけに存在するジョブはここに “追加” する</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">resources</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">jobs</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ca9ee6">dev_smoke_test</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#ca9ee6">name</span>: dev_smoke_test
+</span></span><span style="display:flex;"><span>          ... <span style="color:#737994;font-style:italic"># Jobの詳細の定義</span>
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">prod</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">mode</span>: production
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">workspace</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">host</span>: https://&lt;prod-workspace-url&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#737994;font-style:italic"># prod だけに存在するジョブはここに “追加” する</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">resources</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">jobs</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ca9ee6">prod_backfill</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#ca9ee6">name</span>: prod_backfill
+</span></span><span style="display:flex;"><span>          ... <span style="color:#737994;font-style:italic"># Jobの詳細の定義</span></span></span></code></pre></div>
+  <p class="sr-only">yaml code snippet end</p>
+</figure>
+<h2 id="2-誰がデプロイする前提で設計するか" class="scroll-mt-8 group">
+  2. 誰がデプロイする前提で設計するか？
+  
+    <a href="#2-%e8%aa%b0%e3%81%8c%e3%83%87%e3%83%97%e3%83%ad%e3%82%a4%e3%81%99%e3%82%8b%e5%89%8d%e6%8f%90%e3%81%a7%e8%a8%ad%e8%a8%88%e3%81%99%e3%82%8b%e3%81%8b"
+        class="no-underline hidden opacity-50 hover:opacity-100 !text-inherit group-hover:inline-block"
+        aria-hidden="true" title="Link to this heading" tabindex="-1">
+        <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+    </a>
+  
+</h2>
+<p>A. 環境によってデプロイの主体を分ける</p>
+<p>PoC 段階では、動くものをできるだけ早く実環境にデプロイすることが優先され、 個人ユーザによるデプロイが許容されるケースも少なくありません。
+「誰がデプロイしたか」よりも、「動くかどうか」が重要だからです。</p>
+<p>しかし、実運用フェーズで個人ユーザによるデプロイを許容する運用を続けると様々な問題が起きます。</p>
+<ul>
+<li>組織変更やメンバーの入れ替えによってデプロイした本人がすでに存在しないジョブが残る</li>
+<li>ジョブの存在理由や変更履歴を説明できず、調査や判断のコストが高くなる</li>
+<li>デプロイ権限を持つ個人ユーザには過剰な権限を付与される。手動操作によるミスが起きる</li>
+</ul>
+<p>デプロイに対して「誰が・どの判断で・何をデプロイしたのか」説明できるようにすることがより重要になってきます。</p>
+<p>そこで、実稼働環境では個人ではなくシステム主体でのデプロイを前提に設計する必要があります。
+Service Principal のようなシステムに紐づいた主体を使い、CI/CD パイプライン経由でのみデプロイを許可することで仕組みとして制御できます。</p>
+<p>一方で、開発環境では、新しいジョブの動作確認や試行錯誤のためには、各開発者が気軽にデプロイできることが最重要です。
+過去に、開発環境へのデプロイもすべて CI/CD パイプライン経由に制限したことがありますが、 開発中のジョブを素早く試せず開発のアジリティを下げることになりました。</p>
+<p>これらを踏まえ、本番環境と開発環境では前提を切り替える設計を取ります。
+開発環境では、各開発者がローカル環境から個人ユーザを使ってデプロイできるようにし、 CI/CD パイプライン経由でのシステム向け Identity 使からのデプロイに限定します。</p>
+<p>本番環境と開発環境に求められる役割の違いを理解し、それぞれに適した前提を置くことが重要だと考えています。</p>
+<figure
+  class="codeblock not-prose relative scroll-mt-8 mb-6 has-filename"
+  id="codeblock-04"
+  data-filename="databricks.yml"
+  
+><div
+    class="codeblock-filename absolute left-0 top-0 rounded-tr-sm rounded-br-sm bg-white/10 px-3 py-1 text-white/70 font-mono text-xs font-semibold"
+  >
+    databricks.yml
+  </div><aside
+    class="absolute right-0 top-0 hidden rounded-bl-sm rounded-tr-sm bg-white/10 px-2 py-1 text-white/70 transition-opacity md:inline-block"
+  >
+    <div class="codeblock-meta flex max-w-xs flex-row items-center space-x-3">
+      <div
+        class="small-caps shrink cursor-default truncate font-mono text-xs"
+        aria-hidden="true"
+      >
+        <span class="relative">yaml</span>
+      </div>
+      <div>
+        <clipboard-copy
+          type="button"
+          aria-label="Copy code to clipboard"
+          title="Copy code to clipboard"
+          class="block cursor-pointer transition-colors hover:text-sky-400"
+          target="#codeblock-04 code"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class="lucide lucide-clipboard h-4 w-4"
+  viewBox="0 0 24 24"
+>
+  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+</svg>
+
+        </clipboard-copy>
+      </div>
+      <div>
+        <a
+          href="#codeblock-04"
+          class="block"
+          aria-label="Link to this code block"
+          title="Link to this code block"
+        >
+          <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+        </a>
+      </div>
+    </div>
+  </aside>
+  <p class="sr-only">yaml code snippet start</p>
+  <div class="highlight"><pre tabindex="0" style="color:#c6d0f5;background-color:#303446;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ca9ee6">bundle</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">name</span>: my-bundle 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ca9ee6">resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">jobs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">sample_job</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">name</span>: sample-job-prod
+</span></span><span style="display:flex;"><span>      ... <span style="color:#737994;font-style:italic"># Jobの詳細の定義</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ca9ee6">targets</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">dev</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">mode</span>: development
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">workspace</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">host</span>: https://&lt;dev-workspace-url&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">permissions</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ca9ee6">level</span>: CAN_MANAGE
+</span></span><span style="display:flex;"><span>        <span style="color:#ca9ee6">group_name</span>: dev-databricks-users <span style="color:#737994;font-style:italic"># 事前に個人ユーザ用のグループ作っておき、グループに対してJobの管理権限を付与</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#737994;font-style:italic"># Service PrincipalのToken管理/権限管理により、CI/CDパイプラインのみにデプロイを許可するよう別途設定</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ca9ee6">prod</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">mode</span>: production
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">workspace</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ca9ee6">host</span>: https://&lt;prod-workspace-url&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ca9ee6">permissions</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ca9ee6">level</span>: CAN_MANAGE
+</span></span><span style="display:flex;"><span>        <span style="color:#ca9ee6">service_principal_name</span>: sp-databricks-deployer <span style="color:#737994;font-style:italic"># Service Principalに対してJobの管理権限を付与</span></span></span></code></pre></div>
+  <p class="sr-only">yaml code snippet end</p>
+</figure>
+<h2 id="3-一つのbundleにどれくらいの責務を持たせるか" class="scroll-mt-8 group">
+  3. 一つのBundleにどれくらいの責務を持たせるか？
+  
+    <a href="#3-%e4%b8%80%e3%81%a4%e3%81%aebundle%e3%81%ab%e3%81%a9%e3%82%8c%e3%81%8f%e3%82%89%e3%81%84%e3%81%ae%e8%b2%ac%e5%8b%99%e3%82%92%e6%8c%81%e3%81%9f%e3%81%9b%e3%82%8b%e3%81%8b"
+        class="no-underline hidden opacity-50 hover:opacity-100 !text-inherit group-hover:inline-block"
+        aria-hidden="true" title="Link to this heading" tabindex="-1">
+        <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+    </a>
+  
+</h2>
+<p>A. 変更単位や責任の境界を明確にしてデータドメインや変更頻度を単位とし責務を分割する</p>
+<p>PoC 段階では、あまり深く考えずに一つのBundleにすべてのリソース定義をまとめることが多いです。
+リソース数が少なく、デプロイで多少エラーが出てもリトライすればよく、最終的に目的のリソースが作成・更新できれば十分だからです。</p>
+<p>しかし、実運用フェーズに入ると状況は変わります。
+一部の変更のためのデプロイが、関係のないリソースにまで影響する可能性があるからです。
+このような問題が一度でも起きると、運用上のリスクや確認コストを大きく押し上げることになります。</p>
+<p>自分の経験では、Bundleに含まれるリソースの数が一定規模を超えると、デプロイの失敗が発生しやすくなりました。
+この失敗の原因は特定ドメインのジョブの数が増えすぎたことでした。<code>databricks bundle deploy</code>を実行すると、たとえBundle変更が一部分の変更であっても、すべてのリソースに対してAPI呼び出しが行われます。
+この挙動により、タイミングが悪ければAPIレートリミットによるエラーが発生しやすくなり、お祈りデプロイをせざるを得ませんでした。
+一度でもデプロイ失敗を経験すると、その失敗に備え、全てのリソースへの影響確認をする運用手順が必要になります。</p>
+<p>このような経験から、Bundleは技術的な単位ではなく、変更や責任の単位として設計する必要があると考えるようになりました。
+責務が大きくなりすぎると、リソースの変更単位と実際のデプロイへの影響範囲が乖離し、運用上の不安定さや説明コストにつながります。</p>
+<p>Bundleを分割するかどうかは、次の観点で判断できます。</p>
+<ol>
+<li>リソース数が多く、デプロイが遅い・失敗しやすい</li>
+<li>変更頻度や性質の異なるリソースが含まれる</li>
+<li>まとめてロールバックできないリソースが含まれる</li>
+<li>複数のチームや責任範囲の異なるリソースが混在している</li>
+</ol>
+<p>小規模な構成では、一つのBundleで十分な場合が多く最初から分割を前提に設計する必要はありませんが、
+上記の判断軸に明確に引っかかり始めた場合、一つのBundleにまとめ続けることで運用上のリスクやコストを押し上げます。</p>
+<p>Bundleの分割は「とりあえず細かくするための手段」ではなく、変更単位や責任の境界を明確にするための設計判断として、必要になったタイミングで慎重に行うべきだと考えています。</p>
+<h2 id="4-意図しない変更を防ぐには" class="scroll-mt-8 group">
+  4. 意図しない変更を防ぐには？
+  
+    <a href="#4-%e6%84%8f%e5%9b%b3%e3%81%97%e3%81%aa%e3%81%84%e5%a4%89%e6%9b%b4%e3%82%92%e9%98%b2%e3%81%90%e3%81%ab%e3%81%af"
+        class="no-underline hidden opacity-50 hover:opacity-100 !text-inherit group-hover:inline-block"
+        aria-hidden="true" title="Link to this heading" tabindex="-1">
+        <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+    </a>
+  
+</h2>
+<p>A. 変更内容をできるだけ小さく保ち内容を可視化して確認する</p>
+<p>PoC段階では、デプロイ時に細かな変更内容まで把握せずとも、思い切ってデプロイすることができます。
+影響範囲が小さく、最悪の場合でも再デプロイですぐに修正できるからです。
+一方で、本番環境での運用では、変更を適用する前に「何が変わるのか」「どこに影響が出るのか」を確認し、意図しない変更を事前に検知しインシデントを防ぐことが求められます。</p>
+<p>Databricks Asset Bundles では、<code>databricks bundle plan</code>でどのリソースが <code>add/change/delete/unchanged</code>か確認できますが、特にchangeのリソースについて、具体的にリソースのどの項目の設定が変わるかまでは分かりません。
+また、Asset Bundlesでは、既存リソースとBundle定義内のリソースの対応付けが内部のロジックに委ねられているため、 定義の書き方を少し変えただけで、意図しない差分として扱われる可能性もあります。</p>
+<p>そこで、<code>databricks bundle plan</code>の出力をそのまま鵜呑みにするのではなく、それプラスアルファの手段で変更内容を理解できる状態を作ることが重要です。
+いくつかのやり方が考えられます。</p>
+<ol>
+<li><code>databricks bundle plan</code>で作成されたplanをTerraformのplanとして可視化する</li>
+<li>変更対象リソースをできるだけ小さく保つ</li>
+<li>#3 で触れたように、Bundleの責務を適切な粒度に保つ</li>
+</ol>
+<p>意図しない変更を完全に防ぐことは難しいですが、「何が起きうるか」を事前に説明できる状態を作ることで、デプロイはより安全で再現性のあるものにできます。
+CI/CDパイプラインでplan結果を表示する仕組み作りをすると、レビューもスムーズになります。</p>
+<p>本番稼働中の一定規模を超えた数のResourceが定義された一つの大きなBundleを複数のBundleに分割したことがあるのですが、一度のマイグレーション作業での変更はできるだけ小さく保つ、変更対象と変更内容は可能な限り可視化して都度確認する、ことで不安を軽減し安全に作業することができました。</p>
+<h2 id="まとめ" class="scroll-mt-8 group">
+  まとめ
+  
+    <a href="#%e3%81%be%e3%81%a8%e3%82%81"
+        class="no-underline hidden opacity-50 hover:opacity-100 !text-inherit group-hover:inline-block"
+        aria-hidden="true" title="Link to this heading" tabindex="-1">
+        <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="16"
+  height="16"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-link w-4 h-4 block"
+  viewBox="0 0 24 24"
+>
+  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+</svg>
+
+    </a>
+  
+</h2>
+<p>Databricks Asset Bundles は、PoC 段階では多少ラフな設計でも問題になりにくい一方で、
+実運用では 環境差分・デプロイ主体・責務の境界・変更の可視性 を意識した設計が重要になります。</p>
+<p>運用でつまずいた経験をもとに、</p>
+<ol>
+<li>環境差分は Bundle を分けず target で切り替える</li>
+<li>開発環境と本番環境で デプロイの前提を切り替える</li>
+<li>Bundle は 変更単位・責任の境界として適切な粒度に保つ</li>
+<li>変更はできるだけ小さくし、事前に確認できる状態を作る</li>
+</ol>
+<p>といった設計上のポイントを整理しました。</p>
+<p>Databricks Asset Bundles を PoC から本番運用へ進める際の、 設計を見直すきっかけになれば幸いです。</p>
+  </article>
+    <aside class="not-prose flex flex-col space-y-8 border-t pt-6">
+    <section class="flex flex-col space-y-4">
+      <h2 class="flex flex-row items-center space-x-2 text-lg font-semibold">
+        <svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-tags h-4 w-4"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+>
+  <path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19" />
+  <path
+    d="M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L8.29 18.29a2.426 2.426 0 0 0 3.42 0l3.58-3.58a2.426 2.426 0 0 0 0-3.42z"
+  />
+  <circle cx="6.5" cy="9.5" r=".5" fill="currentColor" />
+</svg>
+
+        <span>Tags</span>
+      </h2>
+
+      <ul class="not-prose ml-6 flex flex-row flex-wrap items-center space-x-2">
+          <li>
+            <a href="/tags/databricks/" class="taxonomy tag">databricks</a>
+          </li>
+          <li>
+            <a href="/tags/terraform/" class="taxonomy tag">terraform</a>
+          </li>
+      </ul>
+    </section>
+    <section class="flex flex-col space-y-4" aria-hidden="true">
+      <h2 class="flex flex-row items-center space-x-2 text-lg font-semibold">
+        <svg
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2"
+  class="lucide lucide-chart-network h-4 w-4"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+>
+  <path
+    d="m13.11 7.664 1.78 2.672M14.162 12.788l-3.324 1.424M20 4l-6.06 1.515M3 3v16a2 2 0 0 0 2 2h16"
+  />
+  <circle cx="12" cy="6" r="2" />
+  <circle cx="16" cy="12" r="2" />
+  <circle cx="9" cy="15" r="2" />
+</svg>
+
+        <span>Graph</span>
+      </h2>
+
+      <content-network-graph
+  class="h-64 ml-6"
+  data-endpoint="/graph/index.json"
+  page="/posts/databricks-asset-bundles/"
+></content-network-graph>
+
+    </section>
+</aside>
+
+
+      </main>
+      <footer class="mt-20 border-t border-neutral-100 pt-2 text-xs">
+        <section class="items-top flex flex-row justify-between opacity-70">
+  <div class="flex flex-col space-y-2">
+      <p>Copyright &copy; 2025, Takafumi Tsukamoto.</p>
+
+  </div>
+    <div>
+      <a
+        href="https://github.com/michenriksen/hugo-theme-til"
+        title="Today I Learned &#8212; A Hugo theme by Michael Henriksen"
+        data-theme-version="0.6.0"
+        >theme: til</a
+      >
+    </div>
+</section>
+
+      </footer>
+    </div>
+    
+  </body>
+</html>
