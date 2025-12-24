@@ -1,7 +1,7 @@
 +++
 title = "Databricks Asset Bundlesの運用を意識した設計のポイント"
 date = 2025-12-24T00:00:00+09:00
-draft  = true
+draft  = false
 tags = ["databricks", "terraform"]
 +++
 
